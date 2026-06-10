@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeetCode Java Solutions – Confluence</title>
+<style>
+  /* ── Confluence-faithful design tokens ── */
+  :root {
+    --page-bg:       #FFFFFF;
+    --sidebar-bg:    #F4F5F7;
+    --sidebar-w:     260px;
+    --header-h:      56px;
+    --topbar-bg:     #0052CC;
+    --topbar-text:   #FFFFFF;
+    --body-text:     #172B4D;
+    --muted:         #6B778C;
+    --link:          #0052CC;
+    --border:        #DFE1E6;
+    --panel-info:    #DEEBFF;
+    --panel-info-border: #4C9AFF;
+    --panel-note:    #EAE6FF;
+    --panel-note-border: #6554C0;
+    --panel-tip:     #E3FCEF;
+    --panel-tip-border: #00875A;
+    --panel-warn:    #FFFAE6;
+    --panel-warn-border: #FF991F;
+    --code-bg:       #F4F5F7;
+    --code-border:   #DFE1E6;
+    --tag-blue:      #DEEBFF;
+    --tag-blue-text: #0747A6;
+    --tag-green:     #E3FCEF;
+    --tag-green-text:#006644;
+    --tag-purple:    #EAE6FF;
+    --tag-purple-text:#403294;
+    --tag-teal:      #E6FCFF;
+    --tag-teal-text: #006694;
+    --tag-orange:    #FFFAE6;
+    --tag-orange-text:#974F0C;
+    --tag-red:       #FFEBE6;
+    --tag-red-text:  #BF2600;
+    --heading1:      #172B4D;
+    --heading2:      #0052CC;
+    --divider:       #DFE1E6;
+    --table-head:    #F4F5F7;
+    --table-stripe:  #FAFBFC;
+    --shadow-sm:     0 1px 3px rgba(9,30,66,.12), 0 0 1px rgba(9,30,66,.16);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--body-text);
+    background: var(--page-bg);
+  }
+
+  /* ── Top navigation bar ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: var(--topbar-bg);
+    display: flex; align-items: center; padding: 0 20px;
+    gap: 16px; z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,.25);
+  }
+  .topbar-logo {
+    font-size: 18px; font-weight: 700; color: var(--topbar-text);
+    letter-spacing: -.3px; display: flex; align-items: center; gap: 8px;
+  }
+  .topbar-logo svg { width: 24px; height: 24px; fill: white; }
+  .topbar-breadcrumb {
+    color: rgba(255,255,255,.75); font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .topbar-breadcrumb span { color: white; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: fixed; top: var(--header-h); left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; padding: 20px 0;
+    font-size: 13px;
+  }
+  .sidebar-section { margin-bottom: 4px; }
+  .sidebar-section-title {
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: var(--muted);
+  }
+  .sidebar a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 16px 6px 24px;
+    color: var(--body-text); text-decoration: none; border-radius: 3px;
+    transition: background .1s;
+    font-size: 13px;
+  }
+  .sidebar a:hover { background: rgba(9,30,66,.08); }
+  .sidebar a.active { background: #DEEBFF; color: var(--link); font-weight: 600; }
+  .sidebar-count {
+    margin-left: auto;
+    background: var(--border); color: var(--muted);
+    font-size: 11px; font-weight: 600;
+    padding: 1px 6px; border-radius: 10px;
+  }
+
+  /* ── Main content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    margin-top: var(--header-h);
+    min-height: calc(100vh - var(--header-h));
+    padding: 40px 60px 80px;
+    max-width: 1100px;
+  }
+
+  /* ── Page title area ── */
+  .page-title-block {
+    border-bottom: 2px solid var(--divider);
+    padding-bottom: 20px; margin-bottom: 32px;
+  }
+  .page-meta {
+    font-size: 12px; color: var(--muted); margin-bottom: 8px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .page-meta-badge {
+    background: var(--tag-blue); color: var(--tag-blue-text);
+    padding: 2px 8px; border-radius: 3px; font-weight: 600; font-size: 11px;
+  }
+  h1.page-title {
+    font-size: 28px; font-weight: 700; color: var(--heading1);
+    letter-spacing: -.5px; margin-bottom: 10px;
+  }
+  .page-description { color: var(--muted); font-size: 14px; max-width: 700px; }
+
+  /* ── Headings ── */
+  h2.section-heading {
+    font-size: 22px; font-weight: 700; color: var(--heading1);
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--topbar-bg);
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2.section-heading .section-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--topbar-bg); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; flex-shrink: 0;
+  }
+  h3.problem-heading {
+    font-size: 16px; font-weight: 700; color: var(--heading2);
+    margin: 28px 0 10px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .problem-number {
+    background: var(--topbar-bg); color: white;
+    font-size: 11px; font-weight: 700; padding: 2px 7px;
+    border-radius: 3px; letter-spacing: .3px;
+  }
+
+  /* ── Tags / labels ── */
+  .tag {
+    display: inline-flex; align-items: center;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 3px;
+    line-height: 1.6;
+  }
+  .tag-blue   { background: var(--tag-blue);   color: var(--tag-blue-text); }
+  .tag-green  { background: var(--tag-green);  color: var(--tag-green-text); }
+  .tag-purple { background: var(--tag-purple); color: var(--tag-purple-text); }
+  .tag-teal   { background: var(--tag-teal);   color: var(--tag-teal-text); }
+  .tag-orange { background: var(--tag-orange); color: var(--tag-orange-text); }
+  .tag-red    { background: var(--tag-red);    color: var(--tag-red-text); }
+
+  /* ── Confluence info panel ── */
+  .panel {
+    border-radius: 3px; padding: 12px 16px; margin: 10px 0 12px;
+    border-left: 4px solid;
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 13.5px;
+  }
+  .panel-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .panel-content { flex: 1; }
+  .panel-content strong { display: block; margin-bottom: 2px; font-size: 13px; }
+  .panel.info   { background: var(--panel-info);  border-color: var(--panel-info-border); }
+  .panel.tip    { background: var(--panel-tip);   border-color: var(--panel-tip-border); }
+  .panel.note   { background: var(--panel-note);  border-color: var(--panel-note-border); }
+  .panel.warn   { background: var(--panel-warn);  border-color: var(--panel-warn-border); }
+
+  /* ── Technique panel ── */
+  .technique-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    background: #F8F9FF; border: 1px solid #C5CAE9;
+    border-radius: 3px; padding: 8px 12px; margin: 8px 0 10px;
+    font-size: 13px;
+  }
+  .technique-label {
+    font-weight: 700; color: #283593; font-size: 12px;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+
+  /* ── Complexity table ── */
+  .complexity-table {
+    width: 100%; border-collapse: collapse;
+    margin: 10px 0 14px;
+    font-size: 13px;
+    border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
+  }
+  .complexity-table th {
+    background: var(--table-head); font-weight: 700;
+    padding: 8px 14px; text-align: left;
+    border-bottom: 2px solid var(--border); color: var(--body-text);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .complexity-table td {
+    padding: 8px 14px; border-bottom: 1px solid var(--border);
+  }
+  .complexity-table tr:last-child td { border-bottom: none; }
+  .complexity-table tr:nth-child(even) td { background: var(--table-stripe); }
+  .complexity-time { color: #00875A; font-weight: 700; font-family: monospace; }
+  .complexity-space { color: #6554C0; font-weight: 700; font-family: monospace; }
+
+  /* ── Code block ── */
+  .code-block {
+    background: #1B2333;
+    border-radius: 4px; overflow: hidden;
+    margin: 10px 0 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .code-header {
+    background: #252F42; padding: 8px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #374461;
+  }
+  .code-lang {
+    font-size: 11px; font-weight: 700; color: #7986CB;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .code-title { font-size: 12px; color: #8892A4; }
+  pre {
+    margin: 0; padding: 16px 20px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12.5px; line-height: 1.65;
+    color: #CDD9F0; overflow-x: auto;
+    tab-size: 4;
+  }
+  /* Syntax highlighting */
+  .kw  { color: #569CD6; } /* keywords */
+  .tp  { color: #4EC9B0; } /* types */
+  .cm  { color: #6A9955; font-style: italic; } /* comments */
+  .st  { color: #CE9178; } /* strings */
+  .nm  { color: #B5CEA8; } /* numbers */
+  .fn  { color: #DCDCAA; } /* functions */
+  .op  { color: #D4D4D4; } /* operators */
+
+  /* ── Problem card wrapper ── */
+  .problem-card {
+    border: 1px solid var(--border);
+    border-radius: 4px; margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .problem-card-header {
+    background: var(--table-head);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .problem-card-body { padding: 16px 20px; }
+
+  /* ── TOC ── */
+  .toc-panel {
+    background: var(--sidebar-bg); border: 1px solid var(--border);
+    border-radius: 3px; padding: 16px 20px; margin: 0 0 36px;
+    max-width: 480px;
+  }
+  .toc-panel h4 {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .6px; margin-bottom: 10px;
+  }
+  .toc-panel ol { padding-left: 18px; }
+  .toc-panel li { margin-bottom: 4px; }
+  .toc-panel a { color: var(--link); text-decoration: none; font-size: 13px; }
+  .toc-panel a:hover { text-decoration: underline; }
+  .toc-count { color: var(--muted); font-size: 12px; margin-left: 4px; }
+
+  /* ── Summary table ── */
+  .summary-table {
+    width: 100%; border-collapse: collapse; margin: 16px 0 32px;
+    font-size: 13px; border: 1px solid var(--border);
+  }
+  .summary-table th {
+    background: var(--topbar-bg); color: white;
+    padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px;
+  }
+  .summary-table td {
+    padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle;
+  }
+  .summary-table tr:nth-child(even) td { background: var(--table-stripe); }
+  .summary-table tr:last-child td { border-bottom: none; }
+
+  /* ── Divider ── */
+  hr.confluence-divider {
+    border: none; border-top: 1px solid var(--divider); margin: 24px 0;
+  }
+
+  /* ── Tips page ── */
+  .tips-table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 13px; border: 1px solid var(--border);
+  }
+  .tips-table th {
+    background: #172B4D; color: white;
+    padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600;
+  }
+  .tips-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tips-table tr:nth-child(even) td { background: var(--table-stripe); }
+  .tips-table td:first-child { font-weight: 700; color: var(--link); white-space: nowrap; }
+
+  @media print {
+    .topbar, .sidebar { display: none; }
+    .main { margin: 0; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+    Confluence
+  </div>
+  <div class="topbar-breadcrumb">
+    Engineering Space › <span>LeetCode Java Solutions</span>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">On This Page</div>
+    <a href="#overview">📋 Overview</a>
+    <a href="#arrays">Arrays <span class="sidebar-count">10</span></a>
+    <a href="#strings">Strings <span class="sidebar-count">10</span></a>
+    <a href="#linked-lists">Linked Lists <span class="sidebar-count">8</span></a>
+    <a href="#stacks-queues">Stacks &amp; Queues <span class="sidebar-count">6</span></a>
+    <a href="#binary-search">Binary Search <span class="sidebar-count">6</span></a>
+    <a href="#trees">Trees <span class="sidebar-count">8</span></a>
+    <a href="#recursion">Recursion &amp; Backtracking <span class="sidebar-count">7</span></a>
+    <a href="#dp">Dynamic Programming <span class="sidebar-count">10</span></a>
+    <a href="#graphs">Graphs <span class="sidebar-count">6</span></a>
+    <a href="#bit">Bit Manipulation <span class="sidebar-count">4</span></a>
+    <a href="#patterns">🗂 Pattern Cheatsheet</a>
+  </div>
+</nav>
+
+<!-- Main content -->
+<main class="main">
+
+  <!-- Page header -->
+  <div class="page-title-block">
+    <div class="page-meta">
+      <span class="page-meta-badge">Technical Reference</span>
+      <span>Created: June 2025</span>
+      <span>75 Problems</span>
+      <span>Java</span>
+    </div>
+    <h1 class="page-title">LeetCode Java Solutions</h1>
+    <div class="page-description">
+      Optimized Java solutions for 75 curated LeetCode problems across 10 topic areas.
+      Each problem includes the technique used, explanation, time &amp; space complexity, and clean Java code.
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div id="overview">
+    <div class="toc-panel">
+      <h4>📑 Contents</h4>
+      <ol>
+        <li><a href="#arrays">Arrays</a> <span class="toc-count">(10 problems)</span></li>
+        <li><a href="#strings">Strings</a> <span class="toc-count">(10 problems)</span></li>
+        <li><a href="#linked-lists">Linked Lists</a> <span class="toc-count">(8 problems)</span></li>
+        <li><a href="#stacks-queues">Stacks &amp; Queues</a> <span class="toc-count">(6 problems)</span></li>
+        <li><a href="#binary-search">Binary Search</a> <span class="toc-count">(6 problems)</span></li>
+        <li><a href="#trees">Trees</a> <span class="toc-count">(8 problems)</span></li>
+        <li><a href="#recursion">Recursion &amp; Backtracking</a> <span class="toc-count">(7 problems)</span></li>
+        <li><a href="#dp">Dynamic Programming</a> <span class="toc-count">(10 problems)</span></li>
+        <li><a href="#graphs">Graphs</a> <span class="toc-count">(6 problems)</span></li>
+        <li><a href="#bit">Bit Manipulation</a> <span class="toc-count">(4 problems)</span></li>
+        <li><a href="#patterns">Pattern Cheatsheet</a></li>
+      </ol>
+    </div>
+
+    <table class="summary-table">
+      <thead>
+        <tr><th>Section</th><th>Key Techniques</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Arrays</td><td>Two Pointers, Sliding Window, Hashing, Kadane's Algorithm, Sorting</td><td>10</td></tr>
+        <tr><td>Strings</td><td>Two Pointers, Sliding Window, Hashing, KMP, Expand Around Center</td><td>10</td></tr>
+        <tr><td>Linked Lists</td><td>Two Pointers, Fast &amp; Slow Pointers, Dummy Node, Recursion</td><td>8</td></tr>
+        <tr><td>Stacks &amp; Queues</td><td>Monotonic Stack, Two Stack Simulation, Queue Rotation</td><td>6</td></tr>
+        <tr><td>Binary Search</td><td>Classic Binary Search, Search Space Reduction</td><td>6</td></tr>
+        <tr><td>Trees</td><td>DFS (Recursive), BFS (Level Order), Divide &amp; Conquer</td><td>8</td></tr>
+        <tr><td>Recursion &amp; Backtracking</td><td>Backtracking with Pruning, State Space Search</td><td>7</td></tr>
+        <tr><td>Dynamic Programming</td><td>1D DP, 2D DP, Knapsack, Memoization</td><td>10</td></tr>
+        <tr><td>Graphs</td><td>DFS, BFS, Union-Find, Topological Sort, Multi-Source BFS</td><td>6</td></tr>
+        <tr><td>Bit Manipulation</td><td>XOR Properties, Bit Counting, Arithmetic Tricks</td><td>4</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- ARRAYS -->
+  <!-- ═══════════════════════════════════════ -->
+  <h2 class="section-heading" id="arrays">
+    <span class="section-icon">A</span> Arrays
+  </h2>
+
+  <!-- 1. Two Sum -->
+  <div class="problem-card">
+    <div class="problem-card-header">
+      <span class="problem-number">#1</span>
+      <h3 class="problem-heading" style="margin:0">Two Sum</h3>
+      <span class="tag tag-green">Easy</span>
+    </div>
+    <div class="problem-card-body">
+      <div class="technique-row">
+        <span class="technique-label">🎯 Technique</span>
+        <span class="tag tag-blue">HashMap Lookup</span>
+        <span class="tag tag-teal">Complement Search</span>
+      </div>
+      <div class="panel info">
+        <span class="panel-icon">💡</span>
+        <div class="panel-content">
+          <strong>Approach — HashMap (One-Pass)</strong>
+          Store each number and its index in a HashMap as you iterate. For each element, check if its complement (<code>target − current</code>) already exists in the map. This avoids the O(n²) brute-force nested loop by turning lookups into O(1).
+        </div>
+      </div>
+      <table class="complexity-table">
+        <thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass through the array</td></tr>
+          <tr><td>Space</td><td class="complexity-space">O(n)</td><td>HashMap stores up to n entries</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Java</span><span class="code-title">Two Sum — HashMap</span></div>
+        <pre><span class="kw">import</span> java.util.HashMap;
+<span class="kw">import</span> java.util.Map;
+
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="kw">int</span>[] <span class="fn">twoSum</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> target) {
+        Map&lt;<span class="tp">Integer</span>, <span class="tp">Integer</span>&gt; map = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; nums.length; i++) {
+            <span class="kw">int</span> complement = target - nums[i];
+            <span class="kw">if</span> (map.containsKey(complement)) {
+                <span class="kw">return new</span> <span class="kw">int</span>[]{map.get(complement), i};
+            }
+            map.put(nums[i], i);
+        }
+        <span class="kw">return new</span> <span class="kw">int</span>[]{};
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 121 -->
+  <div class="problem-card">
+    <div class="problem-card-header">
+      <span class="problem-number">#121</span>
+      <h3 class="problem-heading" style="margin:0">Best Time to Buy and Sell Stock</h3>
+      <span class="tag tag-green">Easy</span>
+    </div>
+    <div class="problem-card-body">
+      <div class="technique-row">
+        <span class="technique-label">🎯 Technique</span>
+        <span class="tag tag-blue">Greedy</span>
+        <span class="tag tag-teal">Single Pass / Running Min</span>
+      </div>
+      <div class="panel info">
+        <span class="panel-icon">💡</span>
+        <div class="panel-content">
+          <strong>Approach — Greedy (Running Minimum)</strong>
+          Track the minimum price seen so far and the best profit achievable. For each price, update the min price and check if selling today beats the current max profit. One pass, no extra space.
+        </div>
+      </div>
+      <table class="complexity-table">
+        <thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass</td></tr>
+          <tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two variables only</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Java</span><span class="code-title">Best Time to Buy and Sell Stock</span></div>
+        <pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">maxProfit</span>(<span class="kw">int</span>[] prices) {
+        <span class="kw">int</span> minPrice = <span class="tp">Integer</span>.MAX_VALUE;
+        <span class="kw">int</span> maxProfit = <span class="nm">0</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> price : prices) {
+            <span class="kw">if</span> (price &lt; minPrice)       minPrice = price;
+            <span class="kw">else if</span> (price - minPrice &gt; maxProfit) maxProfit = price - minPrice;
+        }
+        <span class="kw">return</span> maxProfit;
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 88 -->
+  <div class="problem-card">
+    <div class="problem-card-header">
+      <span class="problem-number">#88</span>
+      <h3 class="problem-heading" style="margin:0">Merge Sorted Array</h3>
+      <span class="tag tag-green">Easy</span>
+    </div>
+    <div class="problem-card-body">
+      <div class="technique-row">
+        <span class="technique-label">🎯 Technique</span>
+        <span class="tag tag-blue">Two Pointers</span>
+        <span class="tag tag-teal">Merge from End</span>
+      </div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two Pointers (Reverse Merge)</strong>Merge from the end to avoid overwriting valid elements. Place three pointers: end of nums1's data, end of nums2, and end of nums1's full length. Compare and fill backwards.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m+n)</td><td>Visit each element once</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place merge</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Merge Sorted Array</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public void</span> <span class="fn">merge</span>(<span class="kw">int</span>[] nums1, <span class="kw">int</span> m, <span class="kw">int</span>[] nums2, <span class="kw">int</span> n) {
+        <span class="kw">int</span> i = m - <span class="nm">1</span>, j = n - <span class="nm">1</span>, k = m + n - <span class="nm">1</span>;
+        <span class="kw">while</span> (i &gt;= <span class="nm">0</span> &amp;&amp; j &gt;= <span class="nm">0</span>) {
+            <span class="kw">if</span> (nums1[i] &gt; nums2[j]) nums1[k--] = nums1[i--];
+            <span class="kw">else</span>                     nums1[k--] = nums2[j--];
+        }
+        <span class="kw">while</span> (j &gt;= <span class="nm">0</span>) nums1[k--] = nums2[j--];
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 217 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#217</span><h3 class="problem-heading" style="margin:0">Contains Duplicate</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">HashSet</span><span class="tag tag-teal">Frequency Tracking</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — HashSet (Seen Set)</strong>Use a HashSet to track numbers seen so far. If <code>set.add(num)</code> returns false, the number is already present — duplicate found. O(1) average lookup per element.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>HashSet storage</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Contains Duplicate</span></div><pre><span class="kw">import</span> java.util.HashSet;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">containsDuplicate</span>(<span class="kw">int</span>[] nums) {
+        Set&lt;<span class="tp">Integer</span>&gt; seen = <span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> num : nums) <span class="kw">if</span> (!seen.add(num)) <span class="kw">return true</span>;
+        <span class="kw">return false</span>;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 238 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#238</span><h3 class="problem-heading" style="margin:0">Product of Array Except Self</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Prefix &amp; Suffix Products</span><span class="tag tag-purple">In-Place Output Array</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Prefix × Suffix (No Division)</strong>First pass fills result with left prefix products. Second pass (right to left) multiplies by a running suffix product. Eliminates the need for division and uses no extra array beyond the output.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Two passes</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Output array not counted</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Product of Array Except Self</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span>[] <span class="fn">productExceptSelf</span>(<span class="kw">int</span>[] nums) {
+        <span class="kw">int</span> n = nums.length;
+        <span class="kw">int</span>[] result = <span class="kw">new int</span>[n];
+        result[<span class="nm">0</span>] = <span class="nm">1</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt; n; i++) result[i] = result[i-<span class="nm">1</span>] * nums[i-<span class="nm">1</span>];
+        <span class="kw">int</span> suffix = <span class="nm">1</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> i = n-<span class="nm">1</span>; i &gt;= <span class="nm">0</span>; i--) { result[i] *= suffix; suffix *= nums[i]; }
+        <span class="kw">return</span> result;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 53 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#53</span><h3 class="problem-heading" style="margin:0">Maximum Subarray</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Kadane's Algorithm</span><span class="tag tag-purple">Dynamic Programming (1D)</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Kadane's Algorithm</strong>Maintain a running sum. At each step: <code>currentSum = max(nums[i], currentSum + nums[i])</code>. If adding the current element makes the sum worse than starting fresh, restart. Track the global maximum.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two variables</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Maximum Subarray — Kadane's</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">maxSubArray</span>(<span class="kw">int</span>[] nums) {
+        <span class="kw">int</span> maxSum = nums[<span class="nm">0</span>], currentSum = nums[<span class="nm">0</span>];
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt; nums.length; i++) {
+            currentSum = <span class="tp">Math</span>.max(nums[i], currentSum + nums[i]);
+            maxSum = <span class="tp">Math</span>.max(maxSum, currentSum);
+        }
+        <span class="kw">return</span> maxSum;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 15 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#15</span><h3 class="problem-heading" style="margin:0">3Sum</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers</span><span class="tag tag-purple">Sort + Dedup</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Sort + Two Pointers</strong>Sort the array. Fix one element with an outer loop. Use two pointers (left, right) to find pairs summing to its negation. Skip duplicate values at every pointer position to avoid duplicate triplets in the result.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n²)</td><td>Outer loop × inner two-pointer scan</td></tr><tr><td>Space</td><td class="complexity-space">O(log n)</td><td>Sorting stack space</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">3Sum — Sort + Two Pointers</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">threeSum</span>(<span class="kw">int</span>[] nums) {
+        <span class="tp">Arrays</span>.sort(nums);
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; result = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; nums.length - <span class="nm">2</span>; i++) {
+            <span class="kw">if</span> (i &gt; <span class="nm">0</span> &amp;&amp; nums[i] == nums[i-<span class="nm">1</span>]) <span class="kw">continue</span>;
+            <span class="kw">int</span> left = i+<span class="nm">1</span>, right = nums.length-<span class="nm">1</span>;
+            <span class="kw">while</span> (left &lt; right) {
+                <span class="kw">int</span> sum = nums[i] + nums[left] + nums[right];
+                <span class="kw">if</span> (sum == <span class="nm">0</span>) {
+                    result.add(<span class="tp">Arrays</span>.asList(nums[i], nums[left], nums[right]));
+                    <span class="kw">while</span> (left &lt; right &amp;&amp; nums[left]==nums[left+<span class="nm">1</span>]) left++;
+                    <span class="kw">while</span> (left &lt; right &amp;&amp; nums[right]==nums[right-<span class="nm">1</span>]) right--;
+                    left++; right--;
+                } <span class="kw">else if</span> (sum &lt; <span class="nm">0</span>) left++;
+                <span class="kw">else</span> right--;
+            }
+        }
+        <span class="kw">return</span> result;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 56 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#56</span><h3 class="problem-heading" style="margin:0">Merge Intervals</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Sorting</span><span class="tag tag-purple">Greedy Interval Merging</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Sort + Linear Scan</strong>Sort intervals by start. Iterate: if the current interval overlaps with the last merged one (start ≤ prev end), extend the end. Otherwise push the current as a new interval.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n log n)</td><td>Dominated by sort</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Output list</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Merge Intervals</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span>[][] <span class="fn">merge</span>(<span class="kw">int</span>[][] intervals) {
+        <span class="tp">Arrays</span>.sort(intervals, (a,b) -&gt; a[<span class="nm">0</span>]-b[<span class="nm">0</span>]);
+        <span class="tp">List</span>&lt;<span class="kw">int</span>[]&gt; merged = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">int</span>[] current = intervals[<span class="nm">0</span>];
+        <span class="kw">for</span> (<span class="kw">int</span>[] iv : intervals) {
+            <span class="kw">if</span> (iv[<span class="nm">0</span>] &lt;= current[<span class="nm">1</span>]) current[<span class="nm">1</span>] = <span class="tp">Math</span>.max(current[<span class="nm">1</span>], iv[<span class="nm">1</span>]);
+            <span class="kw">else</span> { merged.add(current); current = iv; }
+        }
+        merged.add(current);
+        <span class="kw">return</span> merged.toArray(<span class="kw">new int</span>[<span class="nm">0</span>][]);
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#11</span><h3 class="problem-heading" style="margin:0">Container With Most Water</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers</span><span class="tag tag-purple">Greedy Pointer Shrink</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two Pointers (Shrink Smaller Side)</strong>Start with the widest container. Moving the taller pointer inward can only reduce area (width decreases, height can't improve). So always move the shorter pointer inward to search for a taller one.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two pointers only</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Container With Most Water</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">maxArea</span>(<span class="kw">int</span>[] height) {
+        <span class="kw">int</span> left = <span class="nm">0</span>, right = height.length - <span class="nm">1</span>, max = <span class="nm">0</span>;
+        <span class="kw">while</span> (left &lt; right) {
+            max = <span class="tp">Math</span>.max(max, <span class="tp">Math</span>.min(height[left], height[right]) * (right-left));
+            <span class="kw">if</span> (height[left] &lt; height[right]) left++;
+            <span class="kw">else</span> right--;
+        }
+        <span class="kw">return</span> max;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 48 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#48</span><h3 class="problem-heading" style="margin:0">Rotate Image</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Matrix Manipulation</span><span class="tag tag-purple">Transpose + Reverse</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Transpose then Reverse Rows</strong>A 90° clockwise rotation equals: (1) Transpose the matrix (swap <code>[i][j]</code> ↔ <code>[j][i]</code>), then (2) reverse each row. Both steps are done in-place with O(1) extra space.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n²)</td><td>Visit every cell</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Rotate Image — Transpose + Reverse</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public void</span> <span class="fn">rotate</span>(<span class="kw">int</span>[][] matrix) {
+        <span class="kw">int</span> n = matrix.length;
+        <span class="cm">// Step 1: Transpose</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+            <span class="kw">for</span> (<span class="kw">int</span> j = i+<span class="nm">1</span>; j &lt; n; j++) {
+                <span class="kw">int</span> tmp = matrix[i][j]; matrix[i][j] = matrix[j][i]; matrix[j][i] = tmp;
+            }
+        <span class="cm">// Step 2: Reverse each row</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++) {
+            <span class="kw">int</span> l = <span class="nm">0</span>, r = n-<span class="nm">1</span>;
+            <span class="kw">while</span> (l &lt; r) { <span class="kw">int</span> tmp=matrix[i][l]; matrix[i][l++]=matrix[i][r]; matrix[i][r--]=tmp; }
+        }
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ STRINGS ═══════════════ -->
+  <h2 class="section-heading" id="strings"><span class="section-icon">S</span> Strings</h2>
+
+  <!-- 20 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#20</span><h3 class="problem-heading" style="margin:0">Valid Parentheses</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Stack</span><span class="tag tag-purple">Bracket Matching</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Stack (Push/Pop Matching)</strong>Push opening brackets onto the stack. On a closing bracket, pop the stack and verify it's the matching opener. If stack is empty when a closer appears, or non-empty at the end, return false.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Stack depth</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Valid Parentheses</span></div><pre><span class="kw">import</span> java.util.Stack;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isValid</span>(<span class="tp">String</span> s) {
+        <span class="tp">Stack</span>&lt;<span class="tp">Character</span>&gt; stack = <span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">char</span> c : s.toCharArray()) {
+            <span class="kw">if</span> (<span class="st">"([{"</span>.indexOf(c) &gt;= <span class="nm">0</span>) { stack.push(c); <span class="kw">continue</span>; }
+            <span class="kw">if</span> (stack.isEmpty()) <span class="kw">return false</span>;
+            <span class="kw">char</span> top = stack.pop();
+            <span class="kw">if</span> (c==<span class="st">')'</span> &amp;&amp; top!=<span class="st">'('</span>) <span class="kw">return false</span>;
+            <span class="kw">if</span> (c==<span class="st">']'</span> &amp;&amp; top!=<span class="st">'['</span>) <span class="kw">return false</span>;
+            <span class="kw">if</span> (c==<span class="st">'}'</span> &amp;&amp; top!=<span class="st">'{'</span>) <span class="kw">return false</span>;
+        }
+        <span class="kw">return</span> stack.isEmpty();
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 125 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#125</span><h3 class="problem-heading" style="margin:0">Valid Palindrome</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers</span><span class="tag tag-teal">Character Filtering</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two Pointers (Inward Scan)</strong>Use left and right pointers moving inward. Skip non-alphanumeric characters. Compare remaining characters case-insensitively. If any mismatch is found, return false.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Each char visited once</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>No extra allocation</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Valid Palindrome</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isPalindrome</span>(<span class="tp">String</span> s) {
+        <span class="kw">int</span> l = <span class="nm">0</span>, r = s.length()-<span class="nm">1</span>;
+        <span class="kw">while</span> (l &lt; r) {
+            <span class="kw">while</span> (l &lt; r &amp;&amp; !<span class="tp">Character</span>.isLetterOrDigit(s.charAt(l))) l++;
+            <span class="kw">while</span> (l &lt; r &amp;&amp; !<span class="tp">Character</span>.isLetterOrDigit(s.charAt(r))) r--;
+            <span class="kw">if</span> (<span class="tp">Character</span>.toLowerCase(s.charAt(l)) != <span class="tp">Character</span>.toLowerCase(s.charAt(r)))
+                <span class="kw">return false</span>;
+            l++; r--;
+        }
+        <span class="kw">return true</span>;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 242 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#242</span><h3 class="problem-heading" style="margin:0">Valid Anagram</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Frequency Count Array</span><span class="tag tag-teal">Character Hashing</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 26-bucket Frequency Counter</strong>Use an int[26] array. Increment for each char in s, decrement for each char in t. All zeros at the end means anagram. More space-efficient than a HashMap since only lowercase letters are involved.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Two passes of length n</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Fixed 26-element array</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Valid Anagram</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isAnagram</span>(<span class="tp">String</span> s, <span class="tp">String</span> t) {
+        <span class="kw">if</span> (s.length() != t.length()) <span class="kw">return false</span>;
+        <span class="kw">int</span>[] count = <span class="kw">new int</span>[<span class="nm">26</span>];
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; s.length(); i++) {
+            count[s.charAt(i)-<span class="st">'a'</span>]++;
+            count[t.charAt(i)-<span class="st">'a'</span>]--;
+        }
+        <span class="kw">for</span> (<span class="kw">int</span> c : count) <span class="kw">if</span> (c != <span class="nm">0</span>) <span class="kw">return false</span>;
+        <span class="kw">return true</span>;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 49 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#49</span><h3 class="problem-heading" style="margin:0">Group Anagrams</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">HashMap Grouping</span><span class="tag tag-purple">Canonical Key (Sort)</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Sort-Key HashMap</strong>For each string, sort its characters to produce a canonical anagram key. Group all strings with the same sorted key into the same bucket using a HashMap.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n·k log k)</td><td>n strings, each sorted in O(k log k)</td></tr><tr><td>Space</td><td class="complexity-space">O(n·k)</td><td>HashMap storage</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Group Anagrams</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; <span class="fn">groupAnagrams</span>(<span class="tp">String</span>[] strs) {
+        <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; map = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="tp">String</span> s : strs) {
+            <span class="kw">char</span>[] chars = s.toCharArray();
+            <span class="tp">Arrays</span>.sort(chars);
+            map.computeIfAbsent(<span class="kw">new</span> <span class="tp">String</span>(chars), k -&gt; <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;()).add(s);
+        }
+        <span class="kw">return new</span> <span class="tp">ArrayList</span>&lt;&gt;(map.values());
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#5</span><h3 class="problem-heading" style="margin:0">Longest Palindromic Substring</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Expand Around Center</span><span class="tag tag-purple">Dynamic String Search</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Expand Around Center</strong>Every palindrome expands from its center. For each index (and each gap between indices), expand outward while characters match. This covers both odd-length and even-length palindromes in O(n²) with O(1) space — better than the O(n²) space DP approach.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n²)</td><td>2n-1 centers × expansion</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Only indices tracked</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Longest Palindromic Substring</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">longestPalindrome</span>(<span class="tp">String</span> s) {
+        <span class="kw">int</span> start = <span class="nm">0</span>, maxLen = <span class="nm">1</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; s.length(); i++) {
+            <span class="kw">int</span> len = <span class="tp">Math</span>.max(<span class="fn">expand</span>(s, i, i), <span class="fn">expand</span>(s, i, i+<span class="nm">1</span>));
+            <span class="kw">if</span> (len &gt; maxLen) { maxLen = len; start = i - (len-<span class="nm">1</span>)/<span class="nm">2</span>; }
+        }
+        <span class="kw">return</span> s.substring(start, start + maxLen);
+    }
+    <span class="kw">private int</span> <span class="fn">expand</span>(<span class="tp">String</span> s, <span class="kw">int</span> l, <span class="kw">int</span> r) {
+        <span class="kw">while</span> (l &gt;= <span class="nm">0</span> &amp;&amp; r &lt; s.length() &amp;&amp; s.charAt(l)==s.charAt(r)) { l--; r++; }
+        <span class="kw">return</span> r - l - <span class="nm">1</span>;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 76 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#76</span><h3 class="problem-heading" style="margin:0">Minimum Window Substring</h3><span class="tag tag-red">Hard</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Sliding Window</span><span class="tag tag-purple">HashMap Frequency Count</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Variable-Width Sliding Window</strong>Expand the right pointer to include all required characters. Once the window is valid (all t's chars present with required frequency), shrink the left pointer to minimize size. Track the smallest valid window seen.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(|s|+|t|)</td><td>Each char visited at most twice</td></tr><tr><td>Space</td><td class="complexity-space">O(|s|+|t|)</td><td>Two frequency maps</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Minimum Window Substring — Sliding Window</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">minWindow</span>(<span class="tp">String</span> s, <span class="tp">String</span> t) {
+        <span class="tp">Map</span>&lt;<span class="tp">Character</span>,<span class="tp">Integer</span>&gt; need = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;(), win = <span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">char</span> c : t.toCharArray()) need.merge(c,<span class="nm">1</span>,<span class="tp">Integer</span>::sum);
+        <span class="kw">int</span> left=<span class="nm">0</span>, formed=<span class="nm">0</span>, req=need.size();
+        <span class="kw">int</span>[] ans = {-<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>};
+        <span class="kw">for</span> (<span class="kw">int</span> r=<span class="nm">0</span>; r &lt; s.length(); r++) {
+            <span class="kw">char</span> c = s.charAt(r);
+            win.merge(c,<span class="nm">1</span>,<span class="tp">Integer</span>::sum);
+            <span class="kw">if</span> (need.containsKey(c) &amp;&amp; win.get(c).equals(need.get(c))) formed++;
+            <span class="kw">while</span> (formed==req) {
+                <span class="kw">if</span> (ans[<span class="nm">0</span>]==-<span class="nm">1</span> || r-left+<span class="nm">1</span> &lt; ans[<span class="nm">0</span>]) { ans[<span class="nm">0</span>]=r-left+<span class="nm">1</span>; ans[<span class="nm">1</span>]=left; ans[<span class="nm">2</span>]=r; }
+                <span class="kw">char</span> lc = s.charAt(left++);
+                win.merge(lc,-<span class="nm">1</span>,<span class="tp">Integer</span>::sum);
+                <span class="kw">if</span> (need.containsKey(lc) &amp;&amp; win.get(lc) &lt; need.get(lc)) formed--;
+            }
+        }
+        <span class="kw">return</span> ans[<span class="nm">0</span>]==-<span class="nm">1</span> ? <span class="st">""</span> : s.substring(ans[<span class="nm">1</span>],ans[<span class="nm">2</span>]+<span class="nm">1</span>);
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 28 -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#28</span><h3 class="problem-heading" style="margin:0">Find First Occurrence in a String</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">KMP Algorithm</span><span class="tag tag-purple">Failure Function / LPS Array</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — KMP (Knuth-Morris-Pratt)</strong>Build an LPS (Longest Proper Prefix which is also Suffix) array for the pattern. During matching, when a mismatch occurs, use the LPS array to skip back intelligently instead of restarting — achieving O(n+m) time.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n+m)</td><td>n=haystack, m=needle</td></tr><tr><td>Space</td><td class="complexity-space">O(m)</td><td>LPS array for pattern</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">KMP String Search</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">strStr</span>(<span class="tp">String</span> haystack, <span class="tp">String</span> needle) {
+        <span class="kw">int</span> n=haystack.length(), m=needle.length();
+        <span class="kw">if</span>(m==<span class="nm">0</span>) <span class="kw">return</span> <span class="nm">0</span>;
+        <span class="kw">int</span>[] lps = <span class="fn">buildLPS</span>(needle);
+        <span class="kw">int</span> i=<span class="nm">0</span>, j=<span class="nm">0</span>;
+        <span class="kw">while</span>(i &lt; n) {
+            <span class="kw">if</span>(haystack.charAt(i)==needle.charAt(j)) { i++; j++; }
+            <span class="kw">if</span>(j==m) <span class="kw">return</span> i-j;
+            <span class="kw">else if</span>(i &lt; n &amp;&amp; haystack.charAt(i)!=needle.charAt(j))
+                j = (j!=<span class="nm">0</span>) ? lps[j-<span class="nm">1</span>] : (++i &amp; <span class="nm">0</span>);
+        }
+        <span class="kw">return</span> -<span class="nm">1</span>;
+    }
+    <span class="kw">private int</span>[] <span class="fn">buildLPS</span>(<span class="tp">String</span> p) {
+        <span class="kw">int</span>[] lps = <span class="kw">new int</span>[p.length()]; <span class="kw">int</span> len=<span class="nm">0</span>, i=<span class="nm">1</span>;
+        <span class="kw">while</span>(i &lt; p.length()) {
+            <span class="kw">if</span>(p.charAt(i)==p.charAt(len)) lps[i++]=++len;
+            <span class="kw">else if</span>(len!=<span class="nm">0</span>) len=lps[len-<span class="nm">1</span>];
+            <span class="kw">else</span> lps[i++]=<span class="nm">0</span>;
+        }
+        <span class="kw">return</span> lps;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- 443, 14, 459 condensed -->
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#443</span><h3 class="problem-heading" style="margin:0">String Compression</h3><span class="tag tag-orange">Medium</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers</span><span class="tag tag-teal">Read/Write Pointer</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Read/Write Two Pointers (In-Place)</strong>Use a read pointer to scan consecutive characters and count them, and a write pointer to write compressed output back into the same array. Write the character, then the count if &gt; 1.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place modification</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">String Compression</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">compress</span>(<span class="kw">char</span>[] chars) {
+        <span class="kw">int</span> write=<span class="nm">0</span>, read=<span class="nm">0</span>;
+        <span class="kw">while</span>(read &lt; chars.length) {
+            <span class="kw">char</span> curr=chars[read]; <span class="kw">int</span> count=<span class="nm">0</span>;
+            <span class="kw">while</span>(read &lt; chars.length &amp;&amp; chars[read]==curr) { read++; count++; }
+            chars[write++] = curr;
+            <span class="kw">if</span>(count &gt; <span class="nm">1</span>) <span class="kw">for</span>(<span class="kw">char</span> c : <span class="tp">Integer</span>.toString(count).toCharArray()) chars[write++]=c;
+        }
+        <span class="kw">return</span> write;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#14</span><h3 class="problem-heading" style="margin:0">Longest Common Prefix</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Horizontal Scanning</span><span class="tag tag-teal">Iterative Trimming</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Horizontal Scan (Trim Prefix)</strong>Take the first string as the initial prefix. Compare it with each next string, trimming one character at a time from the end until it matches the start of that string.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(S)</td><td>S = total chars across all strings</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place prefix trimming</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Longest Common Prefix</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">String</span> <span class="fn">longestCommonPrefix</span>(<span class="tp">String</span>[] strs) {
+        <span class="tp">String</span> prefix = strs[<span class="nm">0</span>];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>; i &lt; strs.length; i++)
+            <span class="kw">while</span>(!strs[i].startsWith(prefix))
+                prefix = prefix.substring(<span class="nm">0</span>, prefix.length()-<span class="nm">1</span>);
+        <span class="kw">return</span> prefix;
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <div class="problem-card">
+    <div class="problem-card-header"><span class="problem-number">#459</span><h3 class="problem-heading" style="margin:0">Repeated Substring Pattern</h3><span class="tag tag-green">Easy</span></div>
+    <div class="problem-card-body">
+      <div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">String Doubling Trick</span><span class="tag tag-purple">Rotation Property</span></div>
+      <div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Concatenation + Containment Check</strong>Concatenate s with itself → <code>s+s</code>. Remove the first and last characters. If s appears in the result, s can be formed by repeating a substring. This leverages the rotational symmetry property of repeated-pattern strings.</div></div>
+      <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n²)</td><td>contains() worst case</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Doubled string</td></tr></tbody></table>
+      <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Repeated Substring Pattern</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">repeatedSubstringPattern</span>(<span class="tp">String</span> s) {
+        <span class="tp">String</span> doubled = s + s;
+        <span class="kw">return</span> doubled.substring(<span class="nm">1</span>, doubled.length()-<span class="nm">1</span>).contains(s);
+    }
+}</pre></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ LINKED LISTS ═══════════════ -->
+  <h2 class="section-heading" id="linked-lists"><span class="section-icon">L</span> Linked Lists</h2>
+  <div class="panel note"><span class="panel-icon">📌</span><div class="panel-content"><strong>ListNode definition (assumed for all problems below)</strong><br><code>class ListNode { int val; ListNode next; ListNode(int v){ val=v; } }</code></div></div>
+
+  <!-- All 8 linked list problems -->
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#206</span><h3 class="problem-heading" style="margin:0">Reverse Linked List</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Iterative Pointer Reversal</span><span class="tag tag-teal">Three Pointer (prev/curr/next)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Three-Pointer Iterative Reversal</strong>Maintain prev (null), curr, and a saved next. At each step point curr.next → prev, advance all three pointers. When curr is null, prev is the new head.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Three pointers</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Reverse Linked List</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">reverseList</span>(<span class="tp">ListNode</span> head) {
+        <span class="tp">ListNode</span> prev=<span class="kw">null</span>, curr=head;
+        <span class="kw">while</span>(curr!=<span class="kw">null</span>) {
+            <span class="tp">ListNode</span> next=curr.next; curr.next=prev; prev=curr; curr=next;
+        }
+        <span class="kw">return</span> prev;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#21</span><h3 class="problem-heading" style="margin:0">Merge Two Sorted Lists</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers</span><span class="tag tag-teal">Dummy Head Node</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Dummy Head + Two Pointer Merge</strong>A dummy head node eliminates special-casing the result head. Walk both lists, always attaching the smaller node. Append the remaining list at the end.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m+n)</td><td>Visit every node once</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place linking</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Merge Two Sorted Lists</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">mergeTwoLists</span>(<span class="tp">ListNode</span> l1, <span class="tp">ListNode</span> l2) {
+        <span class="tp">ListNode</span> dummy=<span class="kw">new</span> <span class="tp">ListNode</span>(<span class="nm">0</span>), cur=dummy;
+        <span class="kw">while</span>(l1!=<span class="kw">null</span>&amp;&amp;l2!=<span class="kw">null</span>) {
+            <span class="kw">if</span>(l1.val&lt;=l2.val){cur.next=l1;l1=l1.next;}<span class="kw">else</span>{cur.next=l2;l2=l2.next;}
+            cur=cur.next;
+        }
+        cur.next=(l1!=<span class="kw">null</span>)?l1:l2;
+        <span class="kw">return</span> dummy.next;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#19</span><h3 class="problem-heading" style="margin:0">Remove Nth Node From End of List</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers (Fast &amp; Slow)</span><span class="tag tag-teal">Gap Technique</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — n-Gap Two Pointers</strong>Advance the fast pointer n+1 steps ahead. Then move both together until fast is null. Slow pointer lands just before the node to remove.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two pointers</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Remove Nth Node From End</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">removeNthFromEnd</span>(<span class="tp">ListNode</span> head, <span class="kw">int</span> n) {
+        <span class="tp">ListNode</span> dummy=<span class="kw">new</span> <span class="tp">ListNode</span>(<span class="nm">0</span>); dummy.next=head;
+        <span class="tp">ListNode</span> fast=dummy, slow=dummy;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;=n;i++) fast=fast.next;
+        <span class="kw">while</span>(fast!=<span class="kw">null</span>){fast=fast.next;slow=slow.next;}
+        slow.next=slow.next.next;
+        <span class="kw">return</span> dummy.next;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#141</span><h3 class="problem-heading" style="margin:0">Linked List Cycle</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Floyd's Cycle Detection</span><span class="tag tag-purple">Fast &amp; Slow Pointers (Tortoise &amp; Hare)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Floyd's Algorithm</strong>Slow pointer moves 1 step, fast moves 2. If there's a cycle, they will meet. If fast reaches null, no cycle exists. No extra memory needed — no HashSet of visited nodes.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>They meet within one cycle length</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two pointers only</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Linked List Cycle — Floyd's</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">hasCycle</span>(<span class="tp">ListNode</span> head) {
+        <span class="tp">ListNode</span> slow=head, fast=head;
+        <span class="kw">while</span>(fast!=<span class="kw">null</span>&amp;&amp;fast.next!=<span class="kw">null</span>) {
+            slow=slow.next; fast=fast.next.next;
+            <span class="kw">if</span>(slow==fast) <span class="kw">return true</span>;
+        }
+        <span class="kw">return false</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#2</span><h3 class="problem-heading" style="margin:0">Add Two Numbers</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Simulation</span><span class="tag tag-teal">Carry Propagation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Digit-by-Digit Simulation with Carry</strong>Traverse both lists in parallel. At each position, sum the digits plus carry. Create a new node for (sum % 10) and pass (sum / 10) as carry to the next iteration. Handle leftover nodes and final carry.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(max(m,n))</td><td>Traverse longer list</td></tr><tr><td>Space</td><td class="complexity-space">O(max(m,n))</td><td>New result list</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Add Two Numbers</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">addTwoNumbers</span>(<span class="tp">ListNode</span> l1, <span class="tp">ListNode</span> l2) {
+        <span class="tp">ListNode</span> dummy=<span class="kw">new</span> <span class="tp">ListNode</span>(<span class="nm">0</span>), cur=dummy; <span class="kw">int</span> carry=<span class="nm">0</span>;
+        <span class="kw">while</span>(l1!=<span class="kw">null</span>||l2!=<span class="kw">null</span>||carry!=<span class="nm">0</span>) {
+            <span class="kw">int</span> sum=carry;
+            <span class="kw">if</span>(l1!=<span class="kw">null</span>){sum+=l1.val;l1=l1.next;}
+            <span class="kw">if</span>(l2!=<span class="kw">null</span>){sum+=l2.val;l2=l2.next;}
+            carry=sum/<span class="nm">10</span>; cur.next=<span class="kw">new</span> <span class="tp">ListNode</span>(sum%<span class="nm">10</span>); cur=cur.next;
+        }
+        <span class="kw">return</span> dummy.next;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#160</span><h3 class="problem-heading" style="margin:0">Intersection of Two Linked Lists</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two Pointers (Path Equalization)</span><span class="tag tag-purple">Redirect on Null</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Dual Path Traversal</strong>Two pointers walk both lists. When one reaches the end, redirect to the other list's head. After traversing a+b total nodes, both pointers are equidistant from the intersection (or both null if no intersection).</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m+n)</td><td>Each pointer walks both lists</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>No extra storage</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Intersection of Two Linked Lists</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">getIntersectionNode</span>(<span class="tp">ListNode</span> headA, <span class="tp">ListNode</span> headB) {
+        <span class="tp">ListNode</span> a=headA, b=headB;
+        <span class="kw">while</span>(a!=b) { a=(a==<span class="kw">null</span>)?headB:a.next; b=(b==<span class="kw">null</span>)?headA:b.next; }
+        <span class="kw">return</span> a;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#234</span><h3 class="problem-heading" style="margin:0">Palindrome Linked List</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Fast &amp; Slow Pointers</span><span class="tag tag-purple">In-Place Reversal</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Find Mid → Reverse Second Half → Compare</strong>Use slow/fast pointers to find the midpoint. Reverse the second half in-place. Compare both halves from outside in. Achieves O(1) space — better than copying to an array.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Find mid + reverse + compare</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>In-place reverse</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Palindrome Linked List</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isPalindrome</span>(<span class="tp">ListNode</span> head) {
+        <span class="tp">ListNode</span> slow=head,fast=head;
+        <span class="kw">while</span>(fast!=<span class="kw">null</span>&amp;&amp;fast.next!=<span class="kw">null</span>){slow=slow.next;fast=fast.next.next;}
+        <span class="tp">ListNode</span> prev=<span class="kw">null</span>,cur=slow;
+        <span class="kw">while</span>(cur!=<span class="kw">null</span>){<span class="tp">ListNode</span> nx=cur.next;cur.next=prev;prev=cur;cur=nx;}
+        <span class="tp">ListNode</span> l=head,r=prev;
+        <span class="kw">while</span>(r!=<span class="kw">null</span>){<span class="kw">if</span>(l.val!=r.val)<span class="kw">return false</span>;l=l.next;r=r.next;}
+        <span class="kw">return true</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#25</span><h3 class="problem-heading" style="margin:0">Reverse Nodes in k-Group</h3><span class="tag tag-red">Hard</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Recursion</span><span class="tag tag-purple">In-Place k-Group Reversal</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Recursive Group Reversal</strong>Check if k nodes remain. If so, reverse them and recursively process the rest. The reversed group's tail points to the result of the recursive call. If fewer than k nodes remain, return them unchanged.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Each node reversed once</td></tr><tr><td>Space</td><td class="complexity-space">O(n/k)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Reverse Nodes in k-Group</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">reverseKGroup</span>(<span class="tp">ListNode</span> head, <span class="kw">int</span> k) {
+        <span class="tp">ListNode</span> cur=head; <span class="kw">int</span> count=<span class="nm">0</span>;
+        <span class="kw">while</span>(cur!=<span class="kw">null</span>&amp;&amp;count&lt;k){cur=cur.next;count++;}
+        <span class="kw">if</span>(count&lt;k) <span class="kw">return</span> head;
+        <span class="tp">ListNode</span> prev=<span class="kw">null</span>; cur=head;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;k;i++){<span class="tp">ListNode</span> nx=cur.next;cur.next=prev;prev=cur;cur=nx;}
+        head.next=<span class="fn">reverseKGroup</span>(cur,k);
+        <span class="kw">return</span> prev;
+    }
+}</pre></div></div></div>
+
+  <!-- ═══════════════ STACKS & QUEUES ═══════════════ -->
+  <h2 class="section-heading" id="stacks-queues"><span class="section-icon">SQ</span> Stacks &amp; Queues</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#232</span><h3 class="problem-heading" style="margin:0">Implement Queue using Stacks</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Two-Stack Queue Simulation</span><span class="tag tag-purple">Amortized Analysis</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two Stacks (Lazy Transfer)</strong>Push to stack1. On pop/peek, transfer all elements to stack2 only if it's empty. Elements in stack2 are already reversed into FIFO order. Each element is moved at most once → amortized O(1) per operation.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(1) amortized</td><td>Each element transferred once</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Two stacks combined</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Queue using Stacks</span></div><pre><span class="kw">import</span> java.util.Stack;
+<span class="kw">class</span> <span class="tp">MyQueue</span> {
+    <span class="tp">Stack</span>&lt;<span class="tp">Integer</span>&gt; in=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;(), out=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+    <span class="kw">public void</span> push(<span class="kw">int</span> x){in.push(x);}
+    <span class="kw">public int</span> pop(){move();<span class="kw">return</span> out.pop();}
+    <span class="kw">public int</span> peek(){move();<span class="kw">return</span> out.peek();}
+    <span class="kw">public boolean</span> empty(){<span class="kw">return</span> in.isEmpty()&amp;&amp;out.isEmpty();}
+    <span class="kw">private void</span> move(){<span class="kw">if</span>(out.isEmpty())<span class="kw">while</span>(!in.isEmpty())out.push(in.pop());}
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#225</span><h3 class="problem-heading" style="margin:0">Implement Stack using Queues</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Queue Rotation Simulation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Single Queue with Rotation on Push</strong>After enqueuing the new element, rotate all previous elements to the back of the queue. The new element is now at the front, simulating LIFO. Pop and peek are then just queue poll/peek.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">push O(n), pop O(1)</td><td>Rotation cost on push</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>One queue</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Stack using Queues</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">MyStack</span> {
+    <span class="tp">Queue</span>&lt;<span class="tp">Integer</span>&gt; q=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;();
+    <span class="kw">public void</span> push(<span class="kw">int</span> x){
+        q.offer(x);
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;q.size()-<span class="nm">1</span>;i++) q.offer(q.poll());
+    }
+    <span class="kw">public int</span> pop(){<span class="kw">return</span> q.poll();}
+    <span class="kw">public int</span> top(){<span class="kw">return</span> q.peek();}
+    <span class="kw">public boolean</span> empty(){<span class="kw">return</span> q.isEmpty();}
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#739</span><h3 class="problem-heading" style="margin:0">Daily Temperatures</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Monotonic Stack</span><span class="tag tag-purple">Next Greater Element Pattern</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Monotonic Decreasing Stack</strong>Store indices in a stack that is always decreasing in temperature. When a warmer day is found, pop all cooler days from the stack and compute the wait distance. This is the classic "Next Greater Element" pattern.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Each index pushed/popped once</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Stack</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Daily Temperatures — Monotonic Stack</span></div><pre><span class="kw">import</span> java.util.Stack;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span>[] <span class="fn">dailyTemperatures</span>(<span class="kw">int</span>[] temperatures) {
+        <span class="kw">int</span>[] res=<span class="kw">new int</span>[temperatures.length];
+        <span class="tp">Stack</span>&lt;<span class="tp">Integer</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;temperatures.length;i++){
+            <span class="kw">while</span>(!st.isEmpty()&amp;&amp;temperatures[i]&gt;temperatures[st.peek()])
+                res[st.peek()]=i-st.pop();
+            st.push(i);
+        }
+        <span class="kw">return</span> res;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#496</span><h3 class="problem-heading" style="margin:0">Next Greater Element I</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Monotonic Stack</span><span class="tag tag-teal">HashMap Precomputation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Monotonic Stack + HashMap</strong>Precompute next-greater mappings for all nums2 elements using a monotonic stack. Store results in a HashMap. Then answer each nums1 query in O(1) with a map lookup.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m+n)</td><td>One pass each</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>HashMap + stack</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Next Greater Element I</span></div><pre><span class="kw">import</span> java.util.*;
+<span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span>[] <span class="fn">nextGreaterElement</span>(<span class="kw">int</span>[] nums1,<span class="kw">int</span>[] nums2) {
+        <span class="tp">Map</span>&lt;<span class="tp">Integer</span>,<span class="tp">Integer</span>&gt; map=<span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+        <span class="tp">Stack</span>&lt;<span class="tp">Integer</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+        <span class="kw">for</span>(<span class="kw">int</span> n:nums2){<span class="kw">while</span>(!st.isEmpty()&amp;&amp;st.peek()&lt;n)map.put(st.pop(),n);st.push(n);}
+        <span class="kw">int</span>[] res=<span class="kw">new int</span>[nums1.length];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;nums1.length;i++) res[i]=map.getOrDefault(nums1[i],-<span class="nm">1</span>);
+        <span class="kw">return</span> res;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#155</span><h3 class="problem-heading" style="margin:0">Min Stack</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Auxiliary Min Stack</span><span class="tag tag-purple">Parallel Stack Design</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two-Stack Design (Main + Min)</strong>Maintain a parallel min-stack that only updates when the pushed value is ≤ current minimum. Both stacks stay in sync — pop from min-stack only when the popped main-stack value equals the current min.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(1) all ops</td><td>Constant-time push/pop/getMin</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Two stacks</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Min Stack</span></div><pre><span class="kw">import</span> java.util.Stack;
+<span class="kw">class</span> <span class="tp">MinStack</span> {
+    <span class="tp">Stack</span>&lt;<span class="tp">Integer</span>&gt; stack=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;(), minStack=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+    <span class="kw">public void</span> push(<span class="kw">int</span> val){
+        stack.push(val);
+        <span class="kw">if</span>(minStack.isEmpty()||val&lt;=minStack.peek()) minStack.push(val);
+    }
+    <span class="kw">public void</span> pop(){ <span class="kw">if</span>(stack.pop().equals(minStack.peek())) minStack.pop(); }
+    <span class="kw">public int</span> top(){ <span class="kw">return</span> stack.peek(); }
+    <span class="kw">public int</span> getMin(){ <span class="kw">return</span> minStack.peek(); }
+}</pre></div></div></div>
+
+  <!-- ═══ BINARY SEARCH ═══ -->
+  <h2 class="section-heading" id="binary-search"><span class="section-icon">B</span> Binary Search</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#704</span><h3 class="problem-heading" style="margin:0">Binary Search</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Classic Binary Search</span><span class="tag tag-teal">Divide &amp; Conquer</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Iterative Binary Search</strong>Maintain left and right bounds. Compute mid with <code>lo + (hi-lo)/2</code> (avoids overflow). Compare and halve the search space each iteration until target is found or bounds cross.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log n)</td><td>Halve each step</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Iterative</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Binary Search</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">search</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> target) {
+        <span class="kw">int</span> lo=<span class="nm">0</span>, hi=nums.length-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;=hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
+            <span class="kw">if</span>(nums[mid]==target)<span class="kw">return</span> mid;
+            <span class="kw">else if</span>(nums[mid]&lt;target)lo=mid+<span class="nm">1</span>;
+            <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+        }
+        <span class="kw">return</span> -<span class="nm">1</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#34</span><h3 class="problem-heading" style="margin:0">Find First and Last Position in Sorted Array</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Binary Search (Left &amp; Right Bound)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Two Separate Binary Searches</strong>First search: when target found, record it and continue searching left (hi = mid-1). Second search: when target found, record it and continue searching right (lo = mid+1). Returns first and last occurrence.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log n)</td><td>Two binary searches</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Iterative</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">First and Last Position</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span>[] <span class="fn">searchRange</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> target){
+        <span class="kw">return new int</span>[]{<span class="fn">find</span>(nums,target,<span class="kw">true</span>),<span class="fn">find</span>(nums,target,<span class="kw">false</span>)};
+    }
+    <span class="kw">private int</span> <span class="fn">find</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> t,<span class="kw">boolean</span> first){
+        <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>,idx=-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;=hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
+            <span class="kw">if</span>(nums[mid]==t){idx=mid;<span class="kw">if</span>(first)hi=mid-<span class="nm">1</span>;<span class="kw">else</span>lo=mid+<span class="nm">1</span>;}
+            <span class="kw">else if</span>(nums[mid]&lt;t)lo=mid+<span class="nm">1</span>;
+            <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+        }
+        <span class="kw">return</span> idx;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#74</span><h3 class="problem-heading" style="margin:0">Search a 2D Matrix</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Binary Search on Virtual 1D Array</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Flatten to 1D Binary Search</strong>Treat the m×n matrix as a sorted 1D array of m*n elements. For mid index, convert to row = mid/cols and col = mid%cols to access the actual matrix element.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log(m·n))</td><td>Binary search on flattened</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>No extra space</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Search 2D Matrix</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">searchMatrix</span>(<span class="kw">int</span>[][] matrix,<span class="kw">int</span> target) {
+        <span class="kw">int</span> rows=matrix.length, cols=matrix[<span class="nm">0</span>].length, lo=<span class="nm">0</span>, hi=rows*cols-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;=hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>, val=matrix[mid/cols][mid%cols];
+            <span class="kw">if</span>(val==target)<span class="kw">return true</span>;<span class="kw">else if</span>(val&lt;target)lo=mid+<span class="nm">1</span>;<span class="kw">else</span>hi=mid-<span class="nm">1</span>;
+        }
+        <span class="kw">return false</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#33</span><h3 class="problem-heading" style="margin:0">Search in Rotated Sorted Array</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Binary Search with Rotation Detection</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Identify Sorted Half, Then Binary Search</strong>In each iteration, at least one half (left or right of mid) is always sorted. Compare target against that sorted half's range to decide which side to search next.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log n)</td><td>Standard binary search</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Iterative</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Search Rotated Array</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">search</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> target){
+        <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;=hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
+            <span class="kw">if</span>(nums[mid]==target)<span class="kw">return</span> mid;
+            <span class="kw">if</span>(nums[lo]&lt;=nums[mid]){
+                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid])hi=mid-<span class="nm">1</span>; <span class="kw">else</span> lo=mid+<span class="nm">1</span>;
+            }<span class="kw">else</span>{
+                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi])lo=mid+<span class="nm">1</span>; <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+            }
+        }
+        <span class="kw">return</span> -<span class="nm">1</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#81</span><h3 class="problem-heading" style="margin:0">Search in Rotated Sorted Array II</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Binary Search with Duplicate Handling</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Rotation Search + Duplicate Skip</strong>Same as #33 but when <code>nums[lo] == nums[mid]</code>, we can't determine which half is sorted — so increment lo by 1 to skip the duplicate. This degrades worst-case to O(n) when all elements are the same.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log n) avg, O(n) worst</td><td>Duplicates cause linear scan</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Iterative</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Search Rotated Array II (with Duplicates)</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">search</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> target){
+        <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;=hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
+            <span class="kw">if</span>(nums[mid]==target)<span class="kw">return true</span>;
+            <span class="kw">if</span>(nums[lo]==nums[mid]){lo++;<span class="kw">continue</span>;}
+            <span class="kw">if</span>(nums[lo]&lt;nums[mid]){
+                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid])hi=mid-<span class="nm">1</span>;<span class="kw">else</span>lo=mid+<span class="nm">1</span>;
+            }<span class="kw">else</span>{
+                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi])lo=mid+<span class="nm">1</span>;<span class="kw">else</span>hi=mid-<span class="nm">1</span>;
+            }
+        }
+        <span class="kw">return false</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#162</span><h3 class="problem-heading" style="margin:0">Find Peak Element</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Binary Search on Slope</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Binary Search on Ascending Slope</strong>If <code>nums[mid] &lt; nums[mid+1]</code>, we're on an ascending slope and a peak must exist to the right. Otherwise peak is at mid or to the left. Converges to a peak in O(log n).</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(log n)</td><td>Slope-based halving</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Iterative</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Find Peak Element</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">findPeakElement</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>;
+        <span class="kw">while</span>(lo&lt;hi){
+            <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
+            <span class="kw">if</span>(nums[mid]&lt;nums[mid+<span class="nm">1</span>])lo=mid+<span class="nm">1</span>; <span class="kw">else</span> hi=mid;
+        }
+        <span class="kw">return</span> lo;
+    }
+}</pre></div></div></div>
+
+  <!-- ═══ TREES ═══ -->
+  <h2 class="section-heading" id="trees"><span class="section-icon">T</span> Trees</h2>
+  <div class="panel note"><span class="panel-icon">📌</span><div class="panel-content"><strong>TreeNode definition (assumed for all tree problems)</strong><br><code>class TreeNode { int val; TreeNode left, right; TreeNode(int v){ val=v; } }</code></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#104</span><h3 class="problem-heading" style="margin:0">Maximum Depth of Binary Tree</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS (Recursive)</span><span class="tag tag-purple">Divide &amp; Conquer</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Recursive DFS (Post-Order)</strong>maxDepth(node) = 1 + max(maxDepth(left), maxDepth(right)). Base case: null returns 0. Classic divide-and-conquer on a tree.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Visit every node</td></tr><tr><td>Space</td><td class="complexity-space">O(h)</td><td>h = tree height (recursion stack)</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">maxDepth</span>(<span class="tp">TreeNode</span> root) {
+        <span class="kw">if</span>(root==<span class="kw">null</span>)<span class="kw">return</span> <span class="nm">0</span>;
+        <span class="kw">return</span> <span class="nm">1</span>+<span class="tp">Math</span>.max(<span class="fn">maxDepth</span>(root.left),<span class="fn">maxDepth</span>(root.right));
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#100</span><h3 class="problem-heading" style="margin:0">Same Tree</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS (Recursive)</span><span class="tag tag-teal">Structural Comparison</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Recursive Structural Equivalence</strong>Base: both null → true, one null → false, values differ → false. Recurse on both subtrees simultaneously.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Visit every node</td></tr><tr><td>Space</td><td class="complexity-space">O(h)</td><td>Call stack</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isSameTree</span>(<span class="tp">TreeNode</span> p,<span class="tp">TreeNode</span> q){
+        <span class="kw">if</span>(p==<span class="kw">null</span>&amp;&amp;q==<span class="kw">null</span>)<span class="kw">return true</span>;
+        <span class="kw">if</span>(p==<span class="kw">null</span>||q==<span class="kw">null</span>||p.val!=q.val)<span class="kw">return false</span>;
+        <span class="kw">return</span> <span class="fn">isSameTree</span>(p.left,q.left)&amp;&amp;<span class="fn">isSameTree</span>(p.right,q.right);
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#101</span><h3 class="problem-heading" style="margin:0">Symmetric Tree</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS (Mirror Check)</span><span class="tag tag-purple">Recursive Symmetry</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Mirror Recursion</strong>Check isMirror(left, right): values equal AND left.left mirrors right.right AND left.right mirrors right.left. Elegant two-pointer DFS on opposite sides of the tree.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Each node visited once</td></tr><tr><td>Space</td><td class="complexity-space">O(h)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isSymmetric</span>(<span class="tp">TreeNode</span> root){<span class="kw">return</span> <span class="fn">mirror</span>(root.left,root.right);}
+    <span class="kw">boolean</span> <span class="fn">mirror</span>(<span class="tp">TreeNode</span> l,<span class="tp">TreeNode</span> r){
+        <span class="kw">if</span>(l==<span class="kw">null</span>&amp;&amp;r==<span class="kw">null</span>)<span class="kw">return true</span>;
+        <span class="kw">if</span>(l==<span class="kw">null</span>||r==<span class="kw">null</span>)<span class="kw">return false</span>;
+        <span class="kw">return</span> l.val==r.val&amp;&amp;<span class="fn">mirror</span>(l.left,r.right)&amp;&amp;<span class="fn">mirror</span>(l.right,r.left);
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#144 / #94 / #145</span><h3 class="problem-heading" style="margin:0">Tree Traversals (Pre / In / Post order)</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS Iterative (Stack)</span><span class="tag tag-purple">Preorder / Inorder / Postorder</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Preorder (Root→L→R):</strong> Push root, pop+record, push right then left.<br><strong>Inorder (L→Root→R):</strong> Push nodes left-ward, pop+record when null, go right.<br><strong>Postorder (L→R→Root):</strong> Modified preorder (Root→R→L), add to front of LinkedList.</div></div><table class="complexity-table"><thead><tr><th>Traversal</th><th>Time</th><th>Space</th></tr></thead><tbody><tr><td>All three</td><td class="complexity-time">O(n)</td><td class="complexity-space">O(n)</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">All Three Traversals</span></div><pre><span class="cm">// PREORDER</span>
+<span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="fn">preorder</span>(<span class="tp">TreeNode</span> root){
+    <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+    <span class="tp">Stack</span>&lt;<span class="tp">TreeNode</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+    <span class="kw">if</span>(root!=<span class="kw">null</span>)st.push(root);
+    <span class="kw">while</span>(!st.isEmpty()){<span class="tp">TreeNode</span> n=st.pop();res.add(n.val);
+        <span class="kw">if</span>(n.right!=<span class="kw">null</span>)st.push(n.right); <span class="kw">if</span>(n.left!=<span class="kw">null</span>)st.push(n.left);}
+    <span class="kw">return</span> res;
+}
+<span class="cm">// INORDER</span>
+<span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="fn">inorder</span>(<span class="tp">TreeNode</span> root){
+    <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+    <span class="tp">Stack</span>&lt;<span class="tp">TreeNode</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;(); <span class="tp">TreeNode</span> cur=root;
+    <span class="kw">while</span>(cur!=<span class="kw">null</span>||!st.isEmpty()){
+        <span class="kw">while</span>(cur!=<span class="kw">null</span>){st.push(cur);cur=cur.left;}
+        cur=st.pop();res.add(cur.val);cur=cur.right;
+    }
+    <span class="kw">return</span> res;
+}
+<span class="cm">// POSTORDER</span>
+<span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="fn">postorder</span>(<span class="tp">TreeNode</span> root){
+    <span class="tp">LinkedList</span>&lt;<span class="tp">Integer</span>&gt; res=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;();
+    <span class="tp">Stack</span>&lt;<span class="tp">TreeNode</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
+    <span class="kw">if</span>(root!=<span class="kw">null</span>)st.push(root);
+    <span class="kw">while</span>(!st.isEmpty()){<span class="tp">TreeNode</span> n=st.pop();res.addFirst(n.val);
+        <span class="kw">if</span>(n.left!=<span class="kw">null</span>)st.push(n.left); <span class="kw">if</span>(n.right!=<span class="kw">null</span>)st.push(n.right);}
+    <span class="kw">return</span> res;
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#102</span><h3 class="problem-heading" style="margin:0">Binary Tree Level Order Traversal</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">BFS (Level-by-Level)</span><span class="tag tag-purple">Queue with Size Snapshot</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — BFS with Level Snapshots</strong>Use a queue. At each level, snapshot the queue size, process exactly that many nodes, collect their values, and enqueue their children. Repeat until the queue is empty.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Each node visited once</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Queue holds up to one level</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Level Order BFS</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">levelOrder</span>(<span class="tp">TreeNode</span> root){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">if</span>(root==<span class="kw">null</span>)<span class="kw">return</span> res;
+        <span class="tp">Queue</span>&lt;<span class="tp">TreeNode</span>&gt; q=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;(); q.offer(root);
+        <span class="kw">while</span>(!q.isEmpty()){
+            <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; level=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+            <span class="kw">for</span>(<span class="kw">int</span> i=q.size();i&gt;<span class="nm">0</span>;i--){
+                <span class="tp">TreeNode</span> n=q.poll(); level.add(n.val);
+                <span class="kw">if</span>(n.left!=<span class="kw">null</span>)q.offer(n.left); <span class="kw">if</span>(n.right!=<span class="kw">null</span>)q.offer(n.right);
+            }
+            res.add(level);
+        }
+        <span class="kw">return</span> res;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#110</span><h3 class="problem-heading" style="margin:0">Balanced Binary Tree</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS with Sentinel Value</span><span class="tag tag-purple">Bottom-Up Height Check</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Bottom-Up DFS with -1 Sentinel</strong>Return the height from each subtree. If a subtree is unbalanced (height difference > 1), propagate -1 upward to short-circuit. Avoids recomputing heights — O(n) instead of O(n log n).</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Single bottom-up pass</td></tr><tr><td>Space</td><td class="complexity-space">O(h)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isBalanced</span>(<span class="tp">TreeNode</span> root){<span class="kw">return</span> <span class="fn">h</span>(root)!=-<span class="nm">1</span>;}
+    <span class="kw">int</span> <span class="fn">h</span>(<span class="tp">TreeNode</span> n){
+        <span class="kw">if</span>(n==<span class="kw">null</span>)<span class="kw">return</span> <span class="nm">0</span>;
+        <span class="kw">int</span> l=<span class="fn">h</span>(n.left); <span class="kw">if</span>(l==-<span class="nm">1</span>)<span class="kw">return</span> -<span class="nm">1</span>;
+        <span class="kw">int</span> r=<span class="fn">h</span>(n.right);<span class="kw">if</span>(r==-<span class="nm">1</span>)<span class="kw">return</span> -<span class="nm">1</span>;
+        <span class="kw">return</span> <span class="tp">Math</span>.abs(l-r)&gt;<span class="nm">1</span> ? -<span class="nm">1</span> : <span class="nm">1</span>+<span class="tp">Math</span>.max(l,r);
+    }
+}</pre></div></div></div>
+
+  <!-- ═══ RECURSION & BACKTRACKING ═══ -->
+  <h2 class="section-heading" id="recursion"><span class="section-icon">R</span> Recursion &amp; Backtracking</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#39</span><h3 class="problem-heading" style="margin:0">Combination Sum</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-purple">Explore-Choose-Unchoose</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking with Reuse</strong>At each step choose a candidate (allowing reuse at the same index). Recurse with reduced remaining. If remaining = 0, record result. Prune when candidate &gt; remaining. Undo choice before next iteration.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n^(T/M))</td><td>T=target, M=min candidate</td></tr><tr><td>Space</td><td class="complexity-space">O(T/M)</td><td>Max recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Combination Sum — Backtracking</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">combinationSum</span>(<span class="kw">int</span>[] c,<span class="kw">int</span> t){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="fn">bt</span>(c,t,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(),res); <span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] c,<span class="kw">int</span> rem,<span class="kw">int</span> start,<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; cur,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res){
+        <span class="kw">if</span>(rem==<span class="nm">0</span>){res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(cur));<span class="kw">return</span>;}
+        <span class="kw">for</span>(<span class="kw">int</span> i=start;i&lt;c.length;i++){
+            <span class="kw">if</span>(c[i]&gt;rem)<span class="kw">continue</span>;
+            cur.add(c[i]); <span class="fn">bt</span>(c,rem-c[i],i,cur,res); cur.remove(cur.size()-<span class="nm">1</span>);
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#46</span><h3 class="problem-heading" style="margin:0">Permutations</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-teal">Used-Array State Tracking</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking with Boolean Used Array</strong>At each position, try every unused number. Mark it as used, recurse, then unmark (backtrack). When current list reaches nums.length, a complete permutation is found.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n × n!)</td><td>n! permutations, each length n</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Recursion depth + used array</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">permute</span>(<span class="kw">int</span>[] nums){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="fn">bt</span>(nums,<span class="kw">new boolean</span>[nums.length],<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(),res);<span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] nums,<span class="kw">boolean</span>[] used,<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; cur,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res){
+        <span class="kw">if</span>(cur.size()==nums.length){res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(cur));<span class="kw">return</span>;}
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;nums.length;i++){
+            <span class="kw">if</span>(used[i])<span class="kw">continue</span>;
+            used[i]=<span class="kw">true</span>;cur.add(nums[i]);<span class="fn">bt</span>(nums,used,cur,res);
+            cur.remove(cur.size()-<span class="nm">1</span>);used[i]=<span class="kw">false</span>;
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#78</span><h3 class="problem-heading" style="margin:0">Subsets</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-purple">Include/Skip Recursion</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking (Add at Every Node)</strong>Add the current combination to results at every recursive call (not just leaf). Then for each remaining element, choose it, recurse, and unchoose. Generates all 2ⁿ subsets.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n × 2ⁿ)</td><td>2ⁿ subsets, each up to n long</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">subsets</span>(<span class="kw">int</span>[] nums){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="fn">bt</span>(nums,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(),res);<span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> start,<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; cur,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res){
+        res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(cur));
+        <span class="kw">for</span>(<span class="kw">int</span> i=start;i&lt;nums.length;i++){
+            cur.add(nums[i]);<span class="fn">bt</span>(nums,i+<span class="nm">1</span>,cur,res);cur.remove(cur.size()-<span class="nm">1</span>);
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#51</span><h3 class="problem-heading" style="margin:0">N-Queens</h3><span class="tag tag-red">Hard</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-purple">Constraint Propagation via Sets</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking with Column/Diagonal Sets</strong>Place one queen per row. Track occupied columns and two diagonal directions (row-col, row+col) using HashSets. If a column is safe, place the queen, recurse, and remove. Classic constraint satisfaction backtracking.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n!)</td><td>Worst-case placements</td></tr><tr><td>Space</td><td class="complexity-space">O(n²)</td><td>Board + 3 sets</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; <span class="fn">solveNQueens</span>(<span class="kw">int</span> n){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">char</span>[][] board=<span class="kw">new char</span>[n][n];
+        <span class="kw">for</span>(<span class="kw">char</span>[] r:board)<span class="tp">Arrays</span>.fill(r,<span class="st">'.'</span>);
+        <span class="fn">bt</span>(board,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;(),<span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;(),<span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;(),res);
+        <span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">char</span>[][] b,<span class="kw">int</span> row,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; cols,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; d1,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; d2,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; res){
+        <span class="kw">if</span>(row==b.length){<span class="tp">List</span>&lt;<span class="tp">String</span>&gt; sol=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();<span class="kw">for</span>(<span class="kw">char</span>[] r:b)sol.add(<span class="kw">new</span> <span class="tp">String</span>(r));res.add(sol);<span class="kw">return</span>;}
+        <span class="kw">for</span>(<span class="kw">int</span> col=<span class="nm">0</span>;col&lt;b.length;col++){
+            <span class="kw">if</span>(cols.contains(col)||d1.contains(row-col)||d2.contains(row+col))<span class="kw">continue</span>;
+            b[row][col]=<span class="st">'Q'</span>;cols.add(col);d1.add(row-col);d2.add(row+col);
+            <span class="fn">bt</span>(b,row+<span class="nm">1</span>,cols,d1,d2,res);
+            b[row][col]=<span class="st">'.'</span>;cols.remove(col);d1.remove(row-col);d2.remove(row+col);
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#17</span><h3 class="problem-heading" style="margin:0">Letter Combinations of a Phone Number</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-teal">DFS on Decision Tree</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking on Letter Map</strong>Map each digit to its letters. At each recursive call, append one letter for the current digit's mapping and recurse on the next digit. When all digits are processed, add the combination.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(4ⁿ × n)</td><td>n=digits, max 4 letters per digit</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="tp">String</span>[] map={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; <span class="fn">letterCombinations</span>(<span class="tp">String</span> digits){
+        <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">if</span>(digits.isEmpty())<span class="kw">return</span> res;
+        <span class="fn">bt</span>(digits,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">StringBuilder</span>(),res);<span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="tp">String</span> d,<span class="kw">int</span> i,<span class="tp">StringBuilder</span> sb,<span class="tp">List</span>&lt;<span class="tp">String</span>&gt; res){
+        <span class="kw">if</span>(i==d.length()){res.add(sb.toString());<span class="kw">return</span>;}
+        <span class="kw">for</span>(<span class="kw">char</span> c:map[d.charAt(i)-<span class="st">'0'</span>].toCharArray()){
+            sb.append(c);<span class="fn">bt</span>(d,i+<span class="nm">1</span>,sb,res);sb.deleteCharAt(sb.length()-<span class="nm">1</span>);
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#90</span><h3 class="problem-heading" style="margin:0">Subsets II</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-purple">Sort + Skip Duplicates</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking with Duplicate Pruning</strong>Sort the input. In the backtracking loop, if <code>i &gt; start &amp;&amp; nums[i] == nums[i-1]</code>, skip — this prevents choosing the same value at the same recursion depth twice, eliminating duplicate subsets.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n × 2ⁿ)</td><td>Subsets with dedup</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; <span class="fn">subsetsWithDup</span>(<span class="kw">int</span>[] nums){
+        <span class="tp">Arrays</span>.sort(nums);
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="fn">bt</span>(nums,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(),res);<span class="kw">return</span> res;
+    }
+    <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] nums,<span class="kw">int</span> start,<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; cur,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res){
+        res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(cur));
+        <span class="kw">for</span>(<span class="kw">int</span> i=start;i&lt;nums.length;i++){
+            <span class="kw">if</span>(i&gt;start&amp;&amp;nums[i]==nums[i-<span class="nm">1</span>])<span class="kw">continue</span>;
+            cur.add(nums[i]);<span class="fn">bt</span>(nums,i+<span class="nm">1</span>,cur,res);cur.remove(cur.size()-<span class="nm">1</span>);
+        }
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#37</span><h3 class="problem-heading" style="margin:0">Sudoku Solver</h3><span class="tag tag-red">Hard</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Backtracking</span><span class="tag tag-purple">Constraint Checking (Row/Col/Box)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Backtracking with Constraint Validation</strong>Find the next empty cell. Try digits 1–9. Validate against row, column, and 3×3 box constraints. If valid, place the digit and recurse. If no digit works, backtrack (restore '.').</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(9^m)</td><td>m = empty cells (bounded by 81)</td></tr><tr><td>Space</td><td class="complexity-space">O(m)</td><td>Recursion depth</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public void</span> <span class="fn">solveSudoku</span>(<span class="kw">char</span>[][] board){<span class="fn">solve</span>(board);}
+    <span class="kw">boolean</span> <span class="fn">solve</span>(<span class="kw">char</span>[][] b){
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;<span class="nm">9</span>;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;<span class="nm">9</span>;j++){
+            <span class="kw">if</span>(b[i][j]!=<span class="st">'.'</span>)<span class="kw">continue</span>;
+            <span class="kw">for</span>(<span class="kw">char</span> c=<span class="st">'1'</span>;c&lt;=<span class="st">'9'</span>;c++){
+                <span class="kw">if</span>(<span class="fn">ok</span>(b,i,j,c)){b[i][j]=c;<span class="kw">if</span>(<span class="fn">solve</span>(b))<span class="kw">return true</span>;b[i][j]=<span class="st">'.'</span>;}
+            }
+            <span class="kw">return false</span>;
+        }
+        <span class="kw">return true</span>;
+    }
+    <span class="kw">boolean</span> <span class="fn">ok</span>(<span class="kw">char</span>[][] b,<span class="kw">int</span> r,<span class="kw">int</span> c,<span class="kw">char</span> x){
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;<span class="nm">9</span>;i++)
+            <span class="kw">if</span>(b[r][i]==x||b[i][c]==x||b[<span class="nm">3</span>*(r/<span class="nm">3</span>)+i/<span class="nm">3</span>][<span class="nm">3</span>*(c/<span class="nm">3</span>)+i%<span class="nm">3</span>]==x)<span class="kw">return false</span>;
+        <span class="kw">return true</span>;
+    }
+}</pre></div></div></div>
+
+  <!-- ═══ DYNAMIC PROGRAMMING ═══ -->
+  <h2 class="section-heading" id="dp"><span class="section-icon">DP</span> Dynamic Programming</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#70</span><h3 class="problem-heading" style="margin:0">Climbing Stairs</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (1D)</span><span class="tag tag-purple">Fibonacci / Bottom-Up DP</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Space-Optimized 1D DP</strong>dp[n] = dp[n-1] + dp[n-2] (can come from 1 or 2 steps below). Reduce to two variables — no array needed. This is essentially Fibonacci starting at (1, 2).</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One loop</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two rolling variables</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">climbStairs</span>(<span class="kw">int</span> n){
+        <span class="kw">if</span>(n&lt;=<span class="nm">2</span>)<span class="kw">return</span> n;
+        <span class="kw">int</span> a=<span class="nm">1</span>,b=<span class="nm">2</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">3</span>;i&lt;=n;i++){<span class="kw">int</span> c=a+b;a=b;b=c;}
+        <span class="kw">return</span> b;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#198</span><h3 class="problem-heading" style="margin:0">House Robber</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (1D)</span><span class="tag tag-purple">Decision DP: Rob vs Skip</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Rolling Variables DP</strong>At each house: max(skip it = prev1, rob it = prev2 + current). Use two rolling variables to track the last two states. No array needed — O(1) space.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Rolling two variables</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">rob</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span> a=<span class="nm">0</span>,b=<span class="nm">0</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> n:nums){<span class="kw">int</span> c=<span class="tp">Math</span>.max(b,a+n);a=b;b=c;}
+        <span class="kw">return</span> b;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#322</span><h3 class="problem-heading" style="margin:0">Coin Change</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (Unbounded Knapsack)</span><span class="tag tag-purple">Bottom-Up DP Array</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Bottom-Up Coin DP</strong>dp[i] = min coins for amount i. For each amount 1..target, try every coin: dp[i] = min(dp[i], dp[i-coin]+1). Initialize dp[0]=0, rest=infinity. Unbounded knapsack variant.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(amount × coins)</td><td>Two nested loops</td></tr><tr><td>Space</td><td class="complexity-space">O(amount)</td><td>dp array size</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">coinChange</span>(<span class="kw">int</span>[] coins,<span class="kw">int</span> amount){
+        <span class="kw">int</span>[] dp=<span class="kw">new int</span>[amount+<span class="nm">1</span>];
+        <span class="tp">Arrays</span>.fill(dp,amount+<span class="nm">1</span>); dp[<span class="nm">0</span>]=<span class="nm">0</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;=amount;i++)
+            <span class="kw">for</span>(<span class="kw">int</span> c:coins) <span class="kw">if</span>(c&lt;=i) dp[i]=<span class="tp">Math</span>.min(dp[i],dp[i-c]+<span class="nm">1</span>);
+        <span class="kw">return</span> dp[amount]&gt;amount?-<span class="nm">1</span>:dp[amount];
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#300</span><h3 class="problem-heading" style="margin:0">Longest Increasing Subsequence</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (1D)</span><span class="tag tag-purple">Subsequence DP (O(n²) / O(n log n) Patience Sort)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — DP with All-Previous Comparison</strong>dp[i] = length of LIS ending at index i. For each i, scan all j &lt; i where nums[j] &lt; nums[i]: dp[i] = max(dp[j]+1). For O(n log n), use patience sorting with binary search on a tails array.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n²)</td><td>Standard DP; O(n log n) with patience sort</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>dp array</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">lengthOfLIS</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span>[] dp=<span class="kw">new int</span>[nums.length]; <span class="tp">Arrays</span>.fill(dp,<span class="nm">1</span>); <span class="kw">int</span> max=<span class="nm">1</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;nums.length;i++){
+            <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;i;j++) <span class="kw">if</span>(nums[j]&lt;nums[i]) dp[i]=<span class="tp">Math</span>.max(dp[i],dp[j]+<span class="nm">1</span>);
+            max=<span class="tp">Math</span>.max(max,dp[i]);
+        }
+        <span class="kw">return</span> max;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#1143</span><h3 class="problem-heading" style="margin:0">Longest Common Subsequence</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (2D)</span><span class="tag tag-purple">Grid DP / LCS</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 2D DP Table</strong>dp[i][j] = LCS of text1[0..i-1] and text2[0..j-1]. Match: dp[i-1][j-1]+1. No match: max(dp[i-1][j], dp[i][j-1]). Reducible to O(min(m,n)) space with rolling row.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m × n)</td><td>Fill entire DP table</td></tr><tr><td>Space</td><td class="complexity-space">O(m × n)</td><td>Reducible to O(min(m,n))</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">longestCommonSubsequence</span>(<span class="tp">String</span> t1,<span class="tp">String</span> t2){
+        <span class="kw">int</span> m=t1.length(),n=t2.length();
+        <span class="kw">int</span>[][] dp=<span class="kw">new int</span>[m+<span class="nm">1</span>][n+<span class="nm">1</span>];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;=m;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">1</span>;j&lt;=n;j++)
+            dp[i][j]=t1.charAt(i-<span class="nm">1</span>)==t2.charAt(j-<span class="nm">1</span>)?dp[i-<span class="nm">1</span>][j-<span class="nm">1</span>]+<span class="nm">1</span>:<span class="tp">Math</span>.max(dp[i-<span class="nm">1</span>][j],dp[i][j-<span class="nm">1</span>]);
+        <span class="kw">return</span> dp[m][n];
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#62</span><h3 class="problem-heading" style="margin:0">Unique Paths</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (2D)</span><span class="tag tag-teal">Grid Path Counting</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 2D DP Grid</strong>dp[i][j] = ways to reach (i,j) = dp[i-1][j] + dp[i][j-1]. First row and column are all 1s (only one direction). Reducible to 1D array.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m × n)</td><td>Fill grid</td></tr><tr><td>Space</td><td class="complexity-space">O(m × n)</td><td>Reducible to O(n)</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">uniquePaths</span>(<span class="kw">int</span> m,<span class="kw">int</span> n){
+        <span class="kw">int</span>[][] dp=<span class="kw">new int</span>[m][n];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;m;i++)dp[i][<span class="nm">0</span>]=<span class="nm">1</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;n;j++)dp[<span class="nm">0</span>][j]=<span class="nm">1</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;m;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">1</span>;j&lt;n;j++) dp[i][j]=dp[i-<span class="nm">1</span>][j]+dp[i][j-<span class="nm">1</span>];
+        <span class="kw">return</span> dp[m-<span class="nm">1</span>][n-<span class="nm">1</span>];
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#718</span><h3 class="problem-heading" style="margin:0">Maximum Length of Repeated Subarray</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (2D)</span><span class="tag tag-purple">Substring Match DP</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 2D Matching DP</strong>dp[i][j] = length of common subarray ending at nums1[i-1] and nums2[j-1]. If elements match: dp[i][j] = dp[i-1][j-1]+1. Unlike LCS, reset to 0 on mismatch. Track global max.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m × n)</td><td>Fill table</td></tr><tr><td>Space</td><td class="complexity-space">O(m × n)</td><td>DP table</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">findLength</span>(<span class="kw">int</span>[] n1,<span class="kw">int</span>[] n2){
+        <span class="kw">int</span> m=n1.length,n=n2.length,max=<span class="nm">0</span>;
+        <span class="kw">int</span>[][] dp=<span class="kw">new int</span>[m+<span class="nm">1</span>][n+<span class="nm">1</span>];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;=m;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">1</span>;j&lt;=n;j++)
+            <span class="kw">if</span>(n1[i-<span class="nm">1</span>]==n2[j-<span class="nm">1</span>]) max=<span class="tp">Math</span>.max(max,dp[i][j]=dp[i-<span class="nm">1</span>][j-<span class="nm">1</span>]+<span class="nm">1</span>);
+        <span class="kw">return</span> max;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#416</span><h3 class="problem-heading" style="margin:0">Partition Equal Subset Sum</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Dynamic Programming (0/1 Knapsack)</span><span class="tag tag-purple">Boolean Subset Sum DP</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 0/1 Knapsack (Subset Sum)</strong>Reduce to: can we pick a subset summing to total/2? Use a boolean dp[]. dp[j] = true if sum j is achievable. Iterate backwards to avoid using each element twice.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n × sum)</td><td>0/1 knapsack</td></tr><tr><td>Space</td><td class="complexity-space">O(sum)</td><td>1D boolean DP</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">canPartition</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span> sum=<span class="nm">0</span>; <span class="kw">for</span>(<span class="kw">int</span> n:nums)sum+=n;
+        <span class="kw">if</span>(sum%<span class="nm">2</span>!=<span class="nm">0</span>)<span class="kw">return false</span>;
+        <span class="kw">int</span> t=sum/<span class="nm">2</span>; <span class="kw">boolean</span>[] dp=<span class="kw">new boolean</span>[t+<span class="nm">1</span>]; dp[<span class="nm">0</span>]=<span class="kw">true</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> n:nums) <span class="kw">for</span>(<span class="kw">int</span> j=t;j&gt;=n;j--) dp[j]|=dp[j-n];
+        <span class="kw">return</span> dp[t];
+    }
+}</pre></div></div></div>
+
+  <!-- ═══ GRAPHS ═══ -->
+  <h2 class="section-heading" id="graphs"><span class="section-icon">G</span> Graphs</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#133</span><h3 class="problem-heading" style="margin:0">Clone Graph</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS + HashMap</span><span class="tag tag-purple">Graph Deep Copy with Cycle Handling</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — DFS with Visited Map</strong>Map original nodes to their clones. Before recursing into a neighbor, check if it's already cloned (prevents infinite loops in cyclic graphs). DFS naturally handles both the node creation and edge reconstruction.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(V+E)</td><td>Visit every node and edge once</td></tr><tr><td>Space</td><td class="complexity-space">O(V)</td><td>HashMap + recursion stack</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="tp">Map</span>&lt;<span class="tp">Node</span>,<span class="tp">Node</span>&gt; visited=<span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
+    <span class="kw">public</span> <span class="tp">Node</span> <span class="fn">cloneGraph</span>(<span class="tp">Node</span> node){
+        <span class="kw">if</span>(node==<span class="kw">null</span>)<span class="kw">return null</span>;
+        <span class="kw">if</span>(visited.containsKey(node))<span class="kw">return</span> visited.get(node);
+        <span class="tp">Node</span> clone=<span class="kw">new</span> <span class="tp">Node</span>(node.val);
+        visited.put(node,clone);
+        <span class="kw">for</span>(<span class="tp">Node</span> n:node.neighbors) clone.neighbors.add(<span class="fn">cloneGraph</span>(n));
+        <span class="kw">return</span> clone;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#200</span><h3 class="problem-heading" style="margin:0">Number of Islands</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">DFS Flood Fill</span><span class="tag tag-purple">Connected Components</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — DFS Flood Fill</strong>For each unvisited '1', launch a DFS that marks all connected land as visited (sink it to '0'). Each DFS call equals one new island. Classic connected-components counting via DFS flood fill.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m × n)</td><td>Each cell processed once</td></tr><tr><td>Space</td><td class="complexity-space">O(m × n)</td><td>DFS recursion stack</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">numIslands</span>(<span class="kw">char</span>[][] g){
+        <span class="kw">int</span> cnt=<span class="nm">0</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;g.length;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;g[<span class="nm">0</span>].length;j++)
+            <span class="kw">if</span>(g[i][j]==<span class="st">'1'</span>){<span class="fn">dfs</span>(g,i,j);cnt++;}
+        <span class="kw">return</span> cnt;
+    }
+    <span class="kw">void</span> <span class="fn">dfs</span>(<span class="kw">char</span>[][] g,<span class="kw">int</span> i,<span class="kw">int</span> j){
+        <span class="kw">if</span>(i&lt;<span class="nm">0</span>||i&gt;=g.length||j&lt;<span class="nm">0</span>||j&gt;=g[<span class="nm">0</span>].length||g[i][j]!=<span class="st">'1'</span>)<span class="kw">return</span>;
+        g[i][j]=<span class="st">'0'</span>;
+        <span class="fn">dfs</span>(g,i+<span class="nm">1</span>,j);<span class="fn">dfs</span>(g,i-<span class="nm">1</span>,j);<span class="fn">dfs</span>(g,i,j+<span class="nm">1</span>);<span class="fn">dfs</span>(g,i,j-<span class="nm">1</span>);
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#207</span><h3 class="problem-heading" style="margin:0">Course Schedule</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Topological Sort</span><span class="tag tag-purple">DFS Cycle Detection (3-Color)</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — 3-State DFS (White/Gray/Black)</strong>Nodes have states: 0=unvisited, 1=in current path (gray), 2=fully processed (black). If DFS visits a gray node, a cycle exists. No cycle → all courses can be finished.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(V+E)</td><td>Visit all nodes and edges</td></tr><tr><td>Space</td><td class="complexity-space">O(V+E)</td><td>Adjacency list + state array</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">canFinish</span>(<span class="kw">int</span> n,<span class="kw">int</span>[][] pre){
+        <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; g=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++)g.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;());
+        <span class="kw">for</span>(<span class="kw">int</span>[] p:pre)g.get(p[<span class="nm">1</span>]).add(p[<span class="nm">0</span>]);
+        <span class="kw">int</span>[] state=<span class="kw">new int</span>[n];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++) <span class="kw">if</span>(<span class="fn">cycle</span>(g,state,i))<span class="kw">return false</span>;
+        <span class="kw">return true</span>;
+    }
+    <span class="kw">boolean</span> <span class="fn">cycle</span>(<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; g,<span class="kw">int</span>[] st,<span class="kw">int</span> v){
+        <span class="kw">if</span>(st[v]==<span class="nm">1</span>)<span class="kw">return true</span>; <span class="kw">if</span>(st[v]==<span class="nm">2</span>)<span class="kw">return false</span>;
+        st[v]=<span class="nm">1</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> nb:g.get(v)) <span class="kw">if</span>(<span class="fn">cycle</span>(g,st,nb))<span class="kw">return true</span>;
+        st[v]=<span class="nm">2</span>; <span class="kw">return false</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#785</span><h3 class="problem-heading" style="margin:0">Is Graph Bipartite?</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">BFS Graph Coloring</span><span class="tag tag-purple">2-Coloring</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — BFS 2-Coloring</strong>Attempt to color the graph with 2 colors such that no two adjacent nodes share the same color. If a conflict is found during BFS, the graph is not bipartite. Handle disconnected components with an outer loop.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(V+E)</td><td>BFS visits all nodes and edges</td></tr><tr><td>Space</td><td class="complexity-space">O(V)</td><td>Color array + queue</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public boolean</span> <span class="fn">isBipartite</span>(<span class="kw">int</span>[][] g){
+        <span class="kw">int</span>[] color=<span class="kw">new int</span>[g.length]; <span class="tp">Arrays</span>.fill(color,-<span class="nm">1</span>);
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;g.length;i++){
+            <span class="kw">if</span>(color[i]!=-<span class="nm">1</span>)<span class="kw">continue</span>;
+            <span class="tp">Queue</span>&lt;<span class="tp">Integer</span>&gt; q=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;(); q.offer(i);color[i]=<span class="nm">0</span>;
+            <span class="kw">while</span>(!q.isEmpty()){
+                <span class="kw">int</span> node=q.poll();
+                <span class="kw">for</span>(<span class="kw">int</span> nb:g[node]){
+                    <span class="kw">if</span>(color[nb]==-<span class="nm">1</span>){color[nb]=<span class="nm">1</span>-color[node];q.offer(nb);}
+                    <span class="kw">else if</span>(color[nb]==color[node])<span class="kw">return false</span>;
+                }
+            }
+        }
+        <span class="kw">return true</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#994</span><h3 class="problem-heading" style="margin:0">Rotting Oranges</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Multi-Source BFS</span><span class="tag tag-purple">Simultaneous Spread Simulation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Multi-Source BFS (Level = 1 Minute)</strong>Seed the BFS queue with all initially rotten oranges. Spread rot layer-by-layer (each BFS level = 1 minute). Count remaining fresh oranges. If any remain after BFS completes, return -1.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(m × n)</td><td>Visit every cell at most once</td></tr><tr><td>Space</td><td class="complexity-space">O(m × n)</td><td>BFS queue</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">orangesRotting</span>(<span class="kw">int</span>[][] g){
+        <span class="kw">int</span> rows=g.length,cols=g[<span class="nm">0</span>].length,fresh=<span class="nm">0</span>,mins=<span class="nm">0</span>;
+        <span class="tp">Queue</span>&lt;<span class="kw">int</span>[]&gt; q=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;();
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;rows;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;cols;j++){
+            <span class="kw">if</span>(g[i][j]==<span class="nm">2</span>)q.offer(<span class="kw">new int</span>[]{i,j});
+            <span class="kw">else if</span>(g[i][j]==<span class="nm">1</span>)fresh++;
+        }
+        <span class="kw">int</span>[][] dirs={{<span class="nm">1</span>,<span class="nm">0</span>},{-<span class="nm">1</span>,<span class="nm">0</span>},{<span class="nm">0</span>,<span class="nm">1</span>},{<span class="nm">0</span>,-<span class="nm">1</span>}};
+        <span class="kw">while</span>(!q.isEmpty()&amp;&amp;fresh&gt;<span class="nm">0</span>){
+            mins++;
+            <span class="kw">for</span>(<span class="kw">int</span> k=q.size();k&gt;<span class="nm">0</span>;k--){
+                <span class="kw">int</span>[] c=q.poll();
+                <span class="kw">for</span>(<span class="kw">int</span>[] d:dirs){
+                    <span class="kw">int</span> r=c[<span class="nm">0</span>]+d[<span class="nm">0</span>],col=c[<span class="nm">1</span>]+d[<span class="nm">1</span>];
+                    <span class="kw">if</span>(r&gt;=<span class="nm">0</span>&amp;&amp;r&lt;rows&amp;&amp;col&gt;=<span class="nm">0</span>&amp;&amp;col&lt;cols&amp;&amp;g[r][col]==<span class="nm">1</span>){
+                        g[r][col]=<span class="nm">2</span>;fresh--;q.offer(<span class="kw">new int</span>[]{r,col});
+                    }
+                }
+            }
+        }
+        <span class="kw">return</span> fresh==<span class="nm">0</span>?mins:-<span class="nm">1</span>;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#323</span><h3 class="problem-heading" style="margin:0">Number of Connected Components</h3><span class="tag tag-orange">Medium</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Union-Find (DSU)</span><span class="tag tag-purple">Path Compression + Rank</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Union-Find (Disjoint Set Union)</strong>Each node starts as its own root. For each edge, union the two nodes. If they already share a root, no new component created. Otherwise, decrement component count. Path compression makes find() nearly O(1).</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n + E·α(n))</td><td>α ≈ O(1) with path compression</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>Parent array</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">int</span>[] parent;
+    <span class="kw">public int</span> <span class="fn">countComponents</span>(<span class="kw">int</span> n,<span class="kw">int</span>[][] edges){
+        parent=<span class="kw">new int</span>[n]; <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++)parent[i]=i;
+        <span class="kw">int</span> comp=n;
+        <span class="kw">for</span>(<span class="kw">int</span>[] e:edges){
+            <span class="kw">int</span> p1=<span class="fn">find</span>(e[<span class="nm">0</span>]),p2=<span class="fn">find</span>(e[<span class="nm">1</span>]);
+            <span class="kw">if</span>(p1!=p2){parent[p1]=p2;comp--;}
+        }
+        <span class="kw">return</span> comp;
+    }
+    <span class="kw">int</span> <span class="fn">find</span>(<span class="kw">int</span> x){<span class="kw">if</span>(parent[x]!=x)parent[x]=<span class="fn">find</span>(parent[x]);<span class="kw">return</span> parent[x];}
+}</pre></div></div></div>
+
+  <!-- ═══ BIT MANIPULATION ═══ -->
+  <h2 class="section-heading" id="bit"><span class="section-icon">BM</span> Bit Manipulation</h2>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#136</span><h3 class="problem-heading" style="margin:0">Single Number</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">XOR Bit Property</span><span class="tag tag-teal">Pair Cancellation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — XOR All Elements</strong>XOR property: a⊕a=0 and a⊕0=a. XOR all elements — duplicate pairs cancel to 0, leaving only the single number. O(1) space, no sorting, no hashing.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Single variable</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">singleNumber</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span> res=<span class="nm">0</span>; <span class="kw">for</span>(<span class="kw">int</span> n:nums)res^=n; <span class="kw">return</span> res;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#190</span><h3 class="problem-heading" style="margin:0">Reverse Bits</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Bit Extraction &amp; Assembly</span><span class="tag tag-teal">32-bit Iteration</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Extract and Reassemble Bits</strong>Loop 32 times. Each iteration: shift result left, OR in the current LSB of n (n&amp;1), shift n right. After 32 iterations, result holds the reversed bit pattern.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(1)</td><td>Fixed 32 iterations always</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>No extra storage</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">public class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">reverseBits</span>(<span class="kw">int</span> n){
+        <span class="kw">int</span> res=<span class="nm">0</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;<span class="nm">32</span>;i++){res=(res&lt;&lt;<span class="nm">1</span>)|(n&amp;<span class="nm">1</span>);n&gt;&gt;=<span class="nm">1</span>;}
+        <span class="kw">return</span> res;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#191</span><h3 class="problem-heading" style="margin:0">Number of 1 Bits</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Brian Kernighan's Algorithm</span><span class="tag tag-teal">Lowest Set Bit Removal</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — n &amp; (n-1) Trick</strong>n &amp; (n-1) clears the lowest set bit of n. Count how many times we can do this before n becomes 0. More efficient than checking every bit when the number of set bits is sparse.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(k)</td><td>k = number of set bits</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>One counter</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">public class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">hammingWeight</span>(<span class="kw">int</span> n){
+        <span class="kw">int</span> count=<span class="nm">0</span>;
+        <span class="kw">while</span>(n!=<span class="nm">0</span>){n&amp;=(n-<span class="nm">1</span>);count++;}
+        <span class="kw">return</span> count;
+    }
+}</pre></div></div></div>
+
+  <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#268</span><h3 class="problem-heading" style="margin:0">Missing Number</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Gauss Sum Formula</span><span class="tag tag-teal">Math / XOR</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Gauss Formula (Expected - Actual)</strong>Sum of 0..n = n*(n+1)/2. Subtract the actual array sum. The difference is the missing number. Alternatively use XOR of all indices and elements — pairs cancel, leaving the missing value.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>One pass</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Two variables</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
+    <span class="kw">public int</span> <span class="fn">missingNumber</span>(<span class="kw">int</span>[] nums){
+        <span class="kw">int</span> n=nums.length, sum=<span class="nm">0</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> x:nums)sum+=x;
+        <span class="kw">return</span> n*(n+<span class="nm">1</span>)/<span class="nm">2</span>-sum;
+    }
+}</pre></div></div></div>
+
+  <!-- ═══ PATTERN CHEATSHEET ═══ -->
+  <h2 class="section-heading" id="patterns"><span class="section-icon">📋</span> Pattern Cheatsheet</h2>
+  <div class="panel tip"><span class="panel-icon">✅</span><div class="panel-content"><strong>Quick Reference</strong> — Use this table to identify which technique to reach for based on the problem signal words.</div></div>
+
+  <table class="tips-table">
+    <thead><tr><th>Pattern</th><th>Signal Words</th><th>Key Idea</th><th>Typical Complexity</th></tr></thead>
+    <tbody>
+      <tr><td>Two Pointers</td><td>sorted array, pairs summing to target, palindrome, remove duplicates</td><td>Move pointers toward each other or at different speeds to reduce O(n²) → O(n)</td><td>O(n) time, O(1) space</td></tr>
+      <tr><td>Sliding Window</td><td>subarray/substring with constraint, min/max window, frequency</td><td>Expand right until valid, shrink left to minimize/maximize. Maintain a running state</td><td>O(n) time, O(k) space</td></tr>
+      <tr><td>HashMap / HashSet</td><td>count frequencies, find complement, detect duplicate, group by key</td><td>Trade O(n) space for O(1) average lookup to reduce O(n²) to O(n)</td><td>O(n) time, O(n) space</td></tr>
+      <tr><td>Monotonic Stack</td><td>next greater/smaller, daily temperatures, largest rectangle</td><td>Maintain stack in order. Pop when invariant violated — popped elements have found their answer</td><td>O(n) time, O(n) space</td></tr>
+      <tr><td>Binary Search</td><td>sorted array, find position, minimise/maximise satisfying condition, rotated</td><td>Eliminate half the search space each step. Also apply on answer space, not just input</td><td>O(log n) time, O(1) space</td></tr>
+      <tr><td>Backtracking</td><td>all combinations/permutations/subsets, constraint satisfaction, N-Queens, Sudoku</td><td>Build incrementally. Prune invalid branches early. Undo choice (restore state) after each branch</td><td>Exponential worst case; pruning critical</td></tr>
+      <tr><td>Dynamic Programming</td><td>count ways, min/max value, can we achieve X, overlapping subproblems</td><td>Define state → write recurrence → add base cases → optimize space if possible</td><td>Varies; typically O(n) to O(n²)</td></tr>
+      <tr><td>BFS</td><td>shortest path (unweighted), level order, spread from multiple sources, minimum steps</td><td>Explore level by level. Use queue. Multi-source: seed all sources at once</td><td>O(V+E) time, O(V) space</td></tr>
+      <tr><td>DFS</td><td>explore all paths, cycle detection, connected components, topological sort</td><td>Go deep first. Use recursion or explicit stack. 3-color for cycle detection</td><td>O(V+E) time, O(V) space</td></tr>
+      <tr><td>Union-Find (DSU)</td><td>connected components, dynamic connectivity, Kruskal's MST</td><td>Path compression + union by rank → nearly O(1) per operation. Count components by tracking merges</td><td>O(α(n)) per op ≈ O(1)</td></tr>
+      <tr><td>Fast &amp; Slow Pointers</td><td>cycle detection, find middle, palindrome in list</td><td>Slow moves 1 step, fast moves 2. They meet in cycles; slow finds midpoint</td><td>O(n) time, O(1) space</td></tr>
+      <tr><td>Expand Around Center</td><td>palindromic substring, longest palindrome</td><td>Try expanding from each center (char and gap). Covers odd and even lengths without DP array</td><td>O(n²) time, O(1) space</td></tr>
+      <tr><td>Prefix Sum / Product</td><td>range sum queries, product except self, subarray sum equals k</td><td>Precompute cumulative values so any range query is O(1) rather than O(n)</td><td>O(n) preprocessing, O(1) query</td></tr>
+      <tr><td>Bit Manipulation</td><td>find unique number, count bits, missing number, power of 2</td><td>XOR pairs cancel (a⊕a=0). n&amp;(n-1) clears lowest bit. n*(n+1)/2 gives Gauss sum</td><td>O(1) or O(n) depending on problem</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="confluence-divider">
+  <p style="color:var(--muted);font-size:12px;text-align:center;padding:16px 0">
+    LeetCode Java Solutions · 75 Problems · 10 Topics · Generated June 2025
+  </p>
+
+</main>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const links = document.querySelectorAll('.sidebar a');
+  const sections = document.querySelectorAll('h2.section-heading, #overview');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    links.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
