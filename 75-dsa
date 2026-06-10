@@ -503,8 +503,12 @@
         <span class="kw">int</span> minPrice = <span class="tp">Integer</span>.MAX_VALUE;
         <span class="kw">int</span> maxProfit = <span class="nm">0</span>;
         <span class="kw">for</span> (<span class="kw">int</span> price : prices) {
-            <span class="kw">if</span> (price &lt; minPrice)       minPrice = price;
-            <span class="kw">else if</span> (price - minPrice &gt; maxProfit) maxProfit = price - minPrice;
+            <span class="kw">if</span> (price &lt; minPrice) {
+                minPrice = price;
+            }
+            <span class="kw">else if</span> (price - minPrice &gt; maxProfit) {
+                maxProfit = price - minPrice;
+            }
         }
         <span class="kw">return</span> maxProfit;
     }
@@ -532,8 +536,12 @@
     <span class="kw">public void</span> <span class="fn">merge</span>(<span class="kw">int</span>[] nums1, <span class="kw">int</span> m, <span class="kw">int</span>[] nums2, <span class="kw">int</span> n) {
         <span class="kw">int</span> i = m - <span class="nm">1</span>, j = n - <span class="nm">1</span>, k = m + n - <span class="nm">1</span>;
         <span class="kw">while</span> (i &gt;= <span class="nm">0</span> &amp;&amp; j &gt;= <span class="nm">0</span>) {
-            <span class="kw">if</span> (nums1[i] &gt; nums2[j]) nums1[k--] = nums1[i--];
-            <span class="kw">else</span>                     nums1[k--] = nums2[j--];
+            <span class="kw">if</span> (nums1[i] &gt; nums2[j]) {
+                nums1[k--] = nums1[i--];
+            }
+            <span class="kw">else</span> {
+                nums1[k--] = nums2[j--];
+            }
         }
         <span class="kw">while</span> (j &gt;= <span class="nm">0</span>) nums1[k--] = nums2[j--];
     }
@@ -552,7 +560,9 @@
 <span class="kw">class</span> <span class="tp">Solution</span> {
     <span class="kw">public boolean</span> <span class="fn">containsDuplicate</span>(<span class="kw">int</span>[] nums) {
         Set&lt;<span class="tp">Integer</span>&gt; seen = <span class="kw">new</span> <span class="tp">HashSet</span>&lt;&gt;();
-        <span class="kw">for</span> (<span class="kw">int</span> num : nums) <span class="kw">if</span> (!seen.add(num)) <span class="kw">return true</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> num : nums) <span class="kw">if</span> (!seen.add(num) {
+                ) <span class="kw">return true</span>;
+            }
         <span class="kw">return false</span>;
     }
 }</pre></div>
@@ -613,7 +623,9 @@
         <span class="tp">Arrays</span>.sort(nums);
         <span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; result = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
         <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; nums.length - <span class="nm">2</span>; i++) {
-            <span class="kw">if</span> (i &gt; <span class="nm">0</span> &amp;&amp; nums[i] == nums[i-<span class="nm">1</span>]) <span class="kw">continue</span>;
+            <span class="kw">if</span> (i &gt; <span class="nm">0</span> &amp;&amp; nums[i] == nums[i-<span class="nm">1</span>]) {
+                 <span class="kw">continue</span>;
+            }
             <span class="kw">int</span> left = i+<span class="nm">1</span>, right = nums.length-<span class="nm">1</span>;
             <span class="kw">while</span> (left &lt; right) {
                 <span class="kw">int</span> sum = nums[i] + nums[left] + nums[right];
@@ -622,8 +634,12 @@
                     <span class="kw">while</span> (left &lt; right &amp;&amp; nums[left]==nums[left+<span class="nm">1</span>]) left++;
                     <span class="kw">while</span> (left &lt; right &amp;&amp; nums[right]==nums[right-<span class="nm">1</span>]) right--;
                     left++; right--;
-                } <span class="kw">else if</span> (sum &lt; <span class="nm">0</span>) left++;
-                <span class="kw">else</span> right--;
+                } <span class="kw">else if</span> (sum &lt; <span class="nm">0</span>) {
+                left++;
+            }
+                <span class="kw">else</span> {
+                right--;
+            }
             }
         }
         <span class="kw">return</span> result;
@@ -646,8 +662,12 @@
         <span class="tp">List</span>&lt;<span class="kw">int</span>[]&gt; merged = <span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
         <span class="kw">int</span>[] current = intervals[<span class="nm">0</span>];
         <span class="kw">for</span> (<span class="kw">int</span>[] iv : intervals) {
-            <span class="kw">if</span> (iv[<span class="nm">0</span>] &lt;= current[<span class="nm">1</span>]) current[<span class="nm">1</span>] = <span class="tp">Math</span>.max(current[<span class="nm">1</span>], iv[<span class="nm">1</span>]);
-            <span class="kw">else</span> { merged.add(current); current = iv; }
+            <span class="kw">if</span> (iv[<span class="nm">0</span>] &lt;= current[<span class="nm">1</span>]) {
+                current[<span class="nm">1</span>] = <span class="tp">Math</span>.max(current[<span class="nm">1</span>], iv[<span class="nm">1</span>]);
+            }
+            <span class="kw">else</span> {
+                 { merged.add(current);
+            } current = iv; }
         }
         merged.add(current);
         <span class="kw">return</span> merged.toArray(<span class="kw">new int</span>[<span class="nm">0</span>][]);
@@ -668,8 +688,12 @@
         <span class="kw">int</span> left = <span class="nm">0</span>, right = height.length - <span class="nm">1</span>, max = <span class="nm">0</span>;
         <span class="kw">while</span> (left &lt; right) {
             max = <span class="tp">Math</span>.max(max, <span class="tp">Math</span>.min(height[left], height[right]) * (right-left));
-            <span class="kw">if</span> (height[left] &lt; height[right]) left++;
-            <span class="kw">else</span> right--;
+            <span class="kw">if</span> (height[left] &lt; height[right]) {
+                left++;
+            }
+            <span class="kw">else</span> {
+                right--;
+            }
         }
         <span class="kw">return</span> max;
     }
@@ -717,12 +741,22 @@
     <span class="kw">public boolean</span> <span class="fn">isValid</span>(<span class="tp">String</span> s) {
         <span class="tp">Stack</span>&lt;<span class="tp">Character</span>&gt; stack = <span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
         <span class="kw">for</span> (<span class="kw">char</span> c : s.toCharArray()) {
-            <span class="kw">if</span> (<span class="st">"([{"</span>.indexOf(c) &gt;= <span class="nm">0</span>) { stack.push(c); <span class="kw">continue</span>; }
-            <span class="kw">if</span> (stack.isEmpty()) <span class="kw">return false</span>;
+            <span class="kw">if</span> (<span class="st">"([{"</span>.indexOf(c) {
+                &gt;
+            }= <span class="nm">0</span>) { stack.push(c); <span class="kw">continue</span>; }
+            <span class="kw">if</span> (stack.isEmpty() {
+                ) <span class="kw">return false</span>;
+            }
             <span class="kw">char</span> top = stack.pop();
-            <span class="kw">if</span> (c==<span class="st">')'</span> &amp;&amp; top!=<span class="st">'('</span>) <span class="kw">return false</span>;
-            <span class="kw">if</span> (c==<span class="st">']'</span> &amp;&amp; top!=<span class="st">'['</span>) <span class="kw">return false</span>;
-            <span class="kw">if</span> (c==<span class="st">'}'</span> &amp;&amp; top!=<span class="st">'{'</span>) <span class="kw">return false</span>;
+            <span class="kw">if</span> (c==<span class="st">') {
+                '</span> &amp;
+            }&amp; top!=<span class="st">'('</span>) <span class="kw">return false</span>;
+            <span class="kw">if</span> (c==<span class="st">']'</span> &amp;&amp; top!=<span class="st">'['</span>) {
+                 <span class="kw">return false</span>;
+            }
+            <span class="kw">if</span> (c==<span class="st">'}'</span> &amp;&amp; top!=<span class="st">'{'</span>) {
+                 <span class="kw">return false</span>;
+            }
         }
         <span class="kw">return</span> stack.isEmpty();
     }
@@ -762,13 +796,17 @@
       <table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">O(n)</td><td>Two passes of length n</td></tr><tr><td>Space</td><td class="complexity-space">O(1)</td><td>Fixed 26-element array</td></tr></tbody></table>
       <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Valid Anagram</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
     <span class="kw">public boolean</span> <span class="fn">isAnagram</span>(<span class="tp">String</span> s, <span class="tp">String</span> t) {
-        <span class="kw">if</span> (s.length() != t.length()) <span class="kw">return false</span>;
+        <span class="kw">if</span> (s.length() {
+                != t.length()) <span class="kw">return false</span>;
+            }
         <span class="kw">int</span>[] count = <span class="kw">new int</span>[<span class="nm">26</span>];
         <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; s.length(); i++) {
             count[s.charAt(i)-<span class="st">'a'</span>]++;
             count[t.charAt(i)-<span class="st">'a'</span>]--;
         }
-        <span class="kw">for</span> (<span class="kw">int</span> c : count) <span class="kw">if</span> (c != <span class="nm">0</span>) <span class="kw">return false</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> c : count) <span class="kw">if</span> (c != <span class="nm">0</span>) {
+                 <span class="kw">return false</span>;
+            }
         <span class="kw">return true</span>;
     }
 }</pre></div>
@@ -809,7 +847,9 @@
         <span class="kw">int</span> start = <span class="nm">0</span>, maxLen = <span class="nm">1</span>;
         <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; s.length(); i++) {
             <span class="kw">int</span> len = <span class="tp">Math</span>.max(<span class="fn">expand</span>(s, i, i), <span class="fn">expand</span>(s, i, i+<span class="nm">1</span>));
-            <span class="kw">if</span> (len &gt; maxLen) { maxLen = len; start = i - (len-<span class="nm">1</span>)/<span class="nm">2</span>; }
+            <span class="kw">if</span> (len &gt; maxLen) {
+                 { maxLen = len;
+            } start = i - (len-<span class="nm">1</span>)/<span class="nm">2</span>; }
         }
         <span class="kw">return</span> s.substring(start, start + maxLen);
     }
@@ -838,12 +878,18 @@
         <span class="kw">for</span> (<span class="kw">int</span> r=<span class="nm">0</span>; r &lt; s.length(); r++) {
             <span class="kw">char</span> c = s.charAt(r);
             win.merge(c,<span class="nm">1</span>,<span class="tp">Integer</span>::sum);
-            <span class="kw">if</span> (need.containsKey(c) &amp;&amp; win.get(c).equals(need.get(c))) formed++;
+            <span class="kw">if</span> (need.containsKey(c) {
+                &amp;
+            }&amp; win.get(c).equals(need.get(c))) formed++;
             <span class="kw">while</span> (formed==req) {
-                <span class="kw">if</span> (ans[<span class="nm">0</span>]==-<span class="nm">1</span> || r-left+<span class="nm">1</span> &lt; ans[<span class="nm">0</span>]) { ans[<span class="nm">0</span>]=r-left+<span class="nm">1</span>; ans[<span class="nm">1</span>]=left; ans[<span class="nm">2</span>]=r; }
+                <span class="kw">if</span> (ans[<span class="nm">0</span>]==-<span class="nm">1</span> || r-left+<span class="nm">1</span> &lt; ans[<span class="nm">0</span>]) {
+                 { ans[<span class="nm">0</span>]=r-left+<span class="nm">1</span>;
+            } ans[<span class="nm">1</span>]=left; ans[<span class="nm">2</span>]=r; }
                 <span class="kw">char</span> lc = s.charAt(left++);
                 win.merge(lc,-<span class="nm">1</span>,<span class="tp">Integer</span>::sum);
-                <span class="kw">if</span> (need.containsKey(lc) &amp;&amp; win.get(lc) &lt; need.get(lc)) formed--;
+                <span class="kw">if</span> (need.containsKey(lc) {
+                &amp;
+            }&amp; win.get(lc) &lt; need.get(lc)) formed--;
             }
         }
         <span class="kw">return</span> ans[<span class="nm">0</span>]==-<span class="nm">1</span> ? <span class="st">""</span> : s.substring(ans[<span class="nm">1</span>],ans[<span class="nm">2</span>]+<span class="nm">1</span>);
@@ -862,12 +908,18 @@
       <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">KMP String Search</span></div><pre><span class="kw">class</span> <span class="tp">Solution</span> {
     <span class="kw">public int</span> <span class="fn">strStr</span>(<span class="tp">String</span> haystack, <span class="tp">String</span> needle) {
         <span class="kw">int</span> n=haystack.length(), m=needle.length();
-        <span class="kw">if</span>(m==<span class="nm">0</span>) <span class="kw">return</span> <span class="nm">0</span>;
+        <span class="kw">if</span>(m==<span class="nm">0</span>) {
+                 <span class="kw">return</span> <span class="nm">0</span>;
+            }
         <span class="kw">int</span>[] lps = <span class="fn">buildLPS</span>(needle);
         <span class="kw">int</span> i=<span class="nm">0</span>, j=<span class="nm">0</span>;
         <span class="kw">while</span>(i &lt; n) {
-            <span class="kw">if</span>(haystack.charAt(i)==needle.charAt(j)) { i++; j++; }
-            <span class="kw">if</span>(j==m) <span class="kw">return</span> i-j;
+            <span class="kw">if</span>(haystack.charAt(i) {
+                ==needle.charAt(j)) { i++;
+            } j++; }
+            <span class="kw">if</span>(j==m) {
+                 <span class="kw">return</span> i-j;
+            }
             <span class="kw">else if</span>(i &lt; n &amp;&amp; haystack.charAt(i)!=needle.charAt(j))
                 j = (j!=<span class="nm">0</span>) ? lps[j-<span class="nm">1</span>] : (++i &amp; <span class="nm">0</span>);
         }
@@ -876,9 +928,15 @@
     <span class="kw">private int</span>[] <span class="fn">buildLPS</span>(<span class="tp">String</span> p) {
         <span class="kw">int</span>[] lps = <span class="kw">new int</span>[p.length()]; <span class="kw">int</span> len=<span class="nm">0</span>, i=<span class="nm">1</span>;
         <span class="kw">while</span>(i &lt; p.length()) {
-            <span class="kw">if</span>(p.charAt(i)==p.charAt(len)) lps[i++]=++len;
-            <span class="kw">else if</span>(len!=<span class="nm">0</span>) len=lps[len-<span class="nm">1</span>];
-            <span class="kw">else</span> lps[i++]=<span class="nm">0</span>;
+            <span class="kw">if</span>(p.charAt(i) {
+                ==p.charAt(len)) lps[i++]=++len;
+            }
+            <span class="kw">else if</span>(len!=<span class="nm">0</span>) {
+                len=lps[len-<span class="nm">1</span>];
+            }
+            <span class="kw">else</span> {
+                lps[i++]=<span class="nm">0</span>;
+            }
         }
         <span class="kw">return</span> lps;
     }
@@ -900,7 +958,9 @@
             <span class="kw">char</span> curr=chars[read]; <span class="kw">int</span> count=<span class="nm">0</span>;
             <span class="kw">while</span>(read &lt; chars.length &amp;&amp; chars[read]==curr) { read++; count++; }
             chars[write++] = curr;
-            <span class="kw">if</span>(count &gt; <span class="nm">1</span>) <span class="kw">for</span>(<span class="kw">char</span> c : <span class="tp">Integer</span>.toString(count).toCharArray()) chars[write++]=c;
+            <span class="kw">if</span>(count &gt; <span class="nm">1</span>) {
+                 <span class="kw">for</span>(<span class="kw">char</span> c : <span class="tp">Integer</span>.toString(count).toCharArray()) chars[write++]=c;
+            }
         }
         <span class="kw">return</span> write;
     }
@@ -984,7 +1044,9 @@
         <span class="tp">ListNode</span> slow=head, fast=head;
         <span class="kw">while</span>(fast!=<span class="kw">null</span>&amp;&amp;fast.next!=<span class="kw">null</span>) {
             slow=slow.next; fast=fast.next.next;
-            <span class="kw">if</span>(slow==fast) <span class="kw">return true</span>;
+            <span class="kw">if</span>(slow==fast) {
+                 <span class="kw">return true</span>;
+            }
         }
         <span class="kw">return false</span>;
     }
@@ -1027,7 +1089,9 @@
     <span class="kw">public</span> <span class="tp">ListNode</span> <span class="fn">reverseKGroup</span>(<span class="tp">ListNode</span> head, <span class="kw">int</span> k) {
         <span class="tp">ListNode</span> cur=head; <span class="kw">int</span> count=<span class="nm">0</span>;
         <span class="kw">while</span>(cur!=<span class="kw">null</span>&amp;&amp;count&lt;k){cur=cur.next;count++;}
-        <span class="kw">if</span>(count&lt;k) <span class="kw">return</span> head;
+        <span class="kw">if</span>(count&lt;k) {
+                 <span class="kw">return</span> head;
+            }
         <span class="tp">ListNode</span> prev=<span class="kw">null</span>; cur=head;
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;k;i++){<span class="tp">ListNode</span> nx=cur.next;cur.next=prev;prev=cur;cur=nx;}
         head.next=<span class="fn">reverseKGroup</span>(cur,k);
@@ -1045,7 +1109,9 @@
     <span class="kw">public int</span> pop(){move();<span class="kw">return</span> out.pop();}
     <span class="kw">public int</span> peek(){move();<span class="kw">return</span> out.peek();}
     <span class="kw">public boolean</span> empty(){<span class="kw">return</span> in.isEmpty()&amp;&amp;out.isEmpty();}
-    <span class="kw">private void</span> move(){<span class="kw">if</span>(out.isEmpty())<span class="kw">while</span>(!in.isEmpty())out.push(in.pop());}
+    <span class="kw">private void</span> move(){<span class="kw">if</span>(out.isEmpty() {
+                )<span class="kw">while</span>(!in.isEmpty())out.push(in.pop());
+            }}
 }</pre></div></div></div>
 
   <div class="problem-card"><div class="problem-card-header"><span class="problem-number">#225</span><h3 class="problem-heading" style="margin:0">Implement Stack using Queues</h3><span class="tag tag-green">Easy</span></div><div class="problem-card-body"><div class="technique-row"><span class="technique-label">🎯 Technique</span><span class="tag tag-blue">Queue Rotation Simulation</span></div><div class="panel info"><span class="panel-icon">💡</span><div class="panel-content"><strong>Approach — Single Queue with Rotation on Push</strong>After enqueuing the new element, rotate all previous elements to the back of the queue. The new element is now at the front, simulating LIFO. Pop and peek are then just queue poll/peek.</div></div><table class="complexity-table"><thead><tr><th>Metric</th><th>Complexity</th><th>Notes</th></tr></thead><tbody><tr><td>Time</td><td class="complexity-time">push O(n), pop O(1)</td><td>Rotation cost on push</td></tr><tr><td>Space</td><td class="complexity-space">O(n)</td><td>One queue</td></tr></tbody></table><div class="code-block"><div class="code-header"><span class="code-lang">Java</span><span class="code-title">Stack using Queues</span></div><pre><span class="kw">import</span> java.util.*;
@@ -1091,9 +1157,13 @@
     <span class="tp">Stack</span>&lt;<span class="tp">Integer</span>&gt; stack=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;(), minStack=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
     <span class="kw">public void</span> push(<span class="kw">int</span> val){
         stack.push(val);
-        <span class="kw">if</span>(minStack.isEmpty()||val&lt;=minStack.peek()) minStack.push(val);
+        <span class="kw">if</span>(minStack.isEmpty() {
+                ||val&lt;
+            }=minStack.peek()) minStack.push(val);
     }
-    <span class="kw">public void</span> pop(){ <span class="kw">if</span>(stack.pop().equals(minStack.peek())) minStack.pop(); }
+    <span class="kw">public void</span> pop(){ <span class="kw">if</span>(stack.pop() {
+                .equals(minStack.peek())) minStack.pop();
+            } }
     <span class="kw">public int</span> top(){ <span class="kw">return</span> stack.peek(); }
     <span class="kw">public int</span> getMin(){ <span class="kw">return</span> minStack.peek(); }
 }</pre></div></div></div>
@@ -1107,8 +1177,12 @@
         <span class="kw">while</span>(lo&lt;=hi){
             <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
             <span class="kw">if</span>(nums[mid]==target)<span class="kw">return</span> mid;
-            <span class="kw">else if</span>(nums[mid]&lt;target)lo=mid+<span class="nm">1</span>;
-            <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+            <span class="kw">else if</span>(nums[mid]&lt;target) {
+                lo=mid+<span class="nm">1</span>;
+            }
+            <span class="kw">else</span> {
+                hi=mid-<span class="nm">1</span>;
+            }
         }
         <span class="kw">return</span> -<span class="nm">1</span>;
     }
@@ -1122,9 +1196,17 @@
         <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>,idx=-<span class="nm">1</span>;
         <span class="kw">while</span>(lo&lt;=hi){
             <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
-            <span class="kw">if</span>(nums[mid]==t){idx=mid;<span class="kw">if</span>(first)hi=mid-<span class="nm">1</span>;<span class="kw">else</span>lo=mid+<span class="nm">1</span>;}
-            <span class="kw">else if</span>(nums[mid]&lt;t)lo=mid+<span class="nm">1</span>;
-            <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+            <span class="kw">if</span>(nums[mid]==t){idx=mid;<span class="kw">if</span>(first) {
+                hi=mid-<span class="nm">1</span>;
+            }<span class="kw">else</span> {
+                lo=mid+<span class="nm">1</span>;
+            }}
+            <span class="kw">else if</span>(nums[mid]&lt;t) {
+                lo=mid+<span class="nm">1</span>;
+            }
+            <span class="kw">else</span> {
+                hi=mid-<span class="nm">1</span>;
+            }
         }
         <span class="kw">return</span> idx;
     }
@@ -1135,7 +1217,11 @@
         <span class="kw">int</span> rows=matrix.length, cols=matrix[<span class="nm">0</span>].length, lo=<span class="nm">0</span>, hi=rows*cols-<span class="nm">1</span>;
         <span class="kw">while</span>(lo&lt;=hi){
             <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>, val=matrix[mid/cols][mid%cols];
-            <span class="kw">if</span>(val==target)<span class="kw">return true</span>;<span class="kw">else if</span>(val&lt;target)lo=mid+<span class="nm">1</span>;<span class="kw">else</span>hi=mid-<span class="nm">1</span>;
+            <span class="kw">if</span>(val==target)<span class="kw">return true</span>;<span class="kw">else if</span>(val&lt;target) {
+                lo=mid+<span class="nm">1</span>;
+            }<span class="kw">else</span> {
+                hi=mid-<span class="nm">1</span>;
+            }
         }
         <span class="kw">return false</span>;
     }
@@ -1148,9 +1234,17 @@
             <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
             <span class="kw">if</span>(nums[mid]==target)<span class="kw">return</span> mid;
             <span class="kw">if</span>(nums[lo]&lt;=nums[mid]){
-                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid])hi=mid-<span class="nm">1</span>; <span class="kw">else</span> lo=mid+<span class="nm">1</span>;
+                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid]) {
+                hi=mid-<span class="nm">1</span>;
+            } <span class="kw">else</span> {
+                lo=mid+<span class="nm">1</span>;
+            }
             }<span class="kw">else</span>{
-                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi])lo=mid+<span class="nm">1</span>; <span class="kw">else</span> hi=mid-<span class="nm">1</span>;
+                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi]) {
+                lo=mid+<span class="nm">1</span>;
+            } <span class="kw">else</span> {
+                hi=mid-<span class="nm">1</span>;
+            }
             }
         }
         <span class="kw">return</span> -<span class="nm">1</span>;
@@ -1165,9 +1259,17 @@
             <span class="kw">if</span>(nums[mid]==target)<span class="kw">return true</span>;
             <span class="kw">if</span>(nums[lo]==nums[mid]){lo++;<span class="kw">continue</span>;}
             <span class="kw">if</span>(nums[lo]&lt;nums[mid]){
-                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid])hi=mid-<span class="nm">1</span>;<span class="kw">else</span>lo=mid+<span class="nm">1</span>;
+                <span class="kw">if</span>(target&gt;=nums[lo]&amp;&amp;target&lt;nums[mid]) {
+                hi=mid-<span class="nm">1</span>;
+            }<span class="kw">else</span> {
+                lo=mid+<span class="nm">1</span>;
+            }
             }<span class="kw">else</span>{
-                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi])lo=mid+<span class="nm">1</span>;<span class="kw">else</span>hi=mid-<span class="nm">1</span>;
+                <span class="kw">if</span>(target&gt;nums[mid]&amp;&amp;target&lt;=nums[hi]) {
+                lo=mid+<span class="nm">1</span>;
+            }<span class="kw">else</span> {
+                hi=mid-<span class="nm">1</span>;
+            }
             }
         }
         <span class="kw">return false</span>;
@@ -1179,7 +1281,11 @@
         <span class="kw">int</span> lo=<span class="nm">0</span>,hi=nums.length-<span class="nm">1</span>;
         <span class="kw">while</span>(lo&lt;hi){
             <span class="kw">int</span> mid=lo+(hi-lo)/<span class="nm">2</span>;
-            <span class="kw">if</span>(nums[mid]&lt;nums[mid+<span class="nm">1</span>])lo=mid+<span class="nm">1</span>; <span class="kw">else</span> hi=mid;
+            <span class="kw">if</span>(nums[mid]&lt;nums[mid+<span class="nm">1</span>]) {
+                lo=mid+<span class="nm">1</span>;
+            } <span class="kw">else</span> {
+                hi=mid;
+            }
         }
         <span class="kw">return</span> lo;
     }
@@ -1217,9 +1323,15 @@
 <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="fn">preorder</span>(<span class="tp">TreeNode</span> root){
     <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
     <span class="tp">Stack</span>&lt;<span class="tp">TreeNode</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
-    <span class="kw">if</span>(root!=<span class="kw">null</span>)st.push(root);
+    <span class="kw">if</span>(root!=<span class="kw">null</span>) {
+                st.push(root);
+            }
     <span class="kw">while</span>(!st.isEmpty()){<span class="tp">TreeNode</span> n=st.pop();res.add(n.val);
-        <span class="kw">if</span>(n.right!=<span class="kw">null</span>)st.push(n.right); <span class="kw">if</span>(n.left!=<span class="kw">null</span>)st.push(n.left);}
+        <span class="kw">if</span>(n.right!=<span class="kw">null</span>) {
+                st.push(n.right);
+            } <span class="kw">if</span>(n.left!=<span class="kw">null</span>) {
+                st.push(n.left);
+            }}
     <span class="kw">return</span> res;
 }
 <span class="cm">// INORDER</span>
@@ -1236,9 +1348,15 @@
 <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; <span class="fn">postorder</span>(<span class="tp">TreeNode</span> root){
     <span class="tp">LinkedList</span>&lt;<span class="tp">Integer</span>&gt; res=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;();
     <span class="tp">Stack</span>&lt;<span class="tp">TreeNode</span>&gt; st=<span class="kw">new</span> <span class="tp">Stack</span>&lt;&gt;();
-    <span class="kw">if</span>(root!=<span class="kw">null</span>)st.push(root);
+    <span class="kw">if</span>(root!=<span class="kw">null</span>) {
+                st.push(root);
+            }
     <span class="kw">while</span>(!st.isEmpty()){<span class="tp">TreeNode</span> n=st.pop();res.addFirst(n.val);
-        <span class="kw">if</span>(n.left!=<span class="kw">null</span>)st.push(n.left); <span class="kw">if</span>(n.right!=<span class="kw">null</span>)st.push(n.right);}
+        <span class="kw">if</span>(n.left!=<span class="kw">null</span>) {
+                st.push(n.left);
+            } <span class="kw">if</span>(n.right!=<span class="kw">null</span>) {
+                st.push(n.right);
+            }}
     <span class="kw">return</span> res;
 }</pre></div></div></div>
 
@@ -1251,7 +1369,11 @@
             <span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; level=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
             <span class="kw">for</span>(<span class="kw">int</span> i=q.size();i&gt;<span class="nm">0</span>;i--){
                 <span class="tp">TreeNode</span> n=q.poll(); level.add(n.val);
-                <span class="kw">if</span>(n.left!=<span class="kw">null</span>)q.offer(n.left); <span class="kw">if</span>(n.right!=<span class="kw">null</span>)q.offer(n.right);
+                <span class="kw">if</span>(n.left!=<span class="kw">null</span>) {
+                q.offer(n.left);
+            } <span class="kw">if</span>(n.right!=<span class="kw">null</span>) {
+                q.offer(n.right);
+            }
             }
             res.add(level);
         }
@@ -1292,7 +1414,9 @@
         <span class="fn">bt</span>(nums,<span class="kw">new boolean</span>[nums.length],<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(),res);<span class="kw">return</span> res;
     }
     <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] nums,<span class="kw">boolean</span>[] used,<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt; cur,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; res){
-        <span class="kw">if</span>(cur.size()==nums.length){res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;(cur));<span class="kw">return</span>;}
+        <span class="kw">if</span>(cur.size() {
+                ==nums.length){res.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;
+            }&gt;(cur));<span class="kw">return</span>;}
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;nums.length;i++){
             <span class="kw">if</span>(used[i])<span class="kw">continue</span>;
             used[i]=<span class="kw">true</span>;cur.add(nums[i]);<span class="fn">bt</span>(nums,used,cur,res);
@@ -1325,7 +1449,9 @@
     <span class="kw">void</span> <span class="fn">bt</span>(<span class="kw">char</span>[][] b,<span class="kw">int</span> row,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; cols,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; d1,<span class="tp">Set</span>&lt;<span class="tp">Integer</span>&gt; d2,<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">String</span>&gt;&gt; res){
         <span class="kw">if</span>(row==b.length){<span class="tp">List</span>&lt;<span class="tp">String</span>&gt; sol=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();<span class="kw">for</span>(<span class="kw">char</span>[] r:b)sol.add(<span class="kw">new</span> <span class="tp">String</span>(r));res.add(sol);<span class="kw">return</span>;}
         <span class="kw">for</span>(<span class="kw">int</span> col=<span class="nm">0</span>;col&lt;b.length;col++){
-            <span class="kw">if</span>(cols.contains(col)||d1.contains(row-col)||d2.contains(row+col))<span class="kw">continue</span>;
+            <span class="kw">if</span>(cols.contains(col) {
+                ||d1.contains(row-col)||d2.contains(row+col))<span class="kw">continue</span>;
+            }
             b[row][col]=<span class="st">'Q'</span>;cols.add(col);d1.add(row-col);d2.add(row+col);
             <span class="fn">bt</span>(b,row+<span class="nm">1</span>,cols,d1,d2,res);
             b[row][col]=<span class="st">'.'</span>;cols.remove(col);d1.remove(row-col);d2.remove(row+col);
@@ -1337,11 +1463,15 @@
     <span class="tp">String</span>[] map={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
     <span class="kw">public</span> <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; <span class="fn">letterCombinations</span>(<span class="tp">String</span> digits){
         <span class="tp">List</span>&lt;<span class="tp">String</span>&gt; res=<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;();
-        <span class="kw">if</span>(digits.isEmpty())<span class="kw">return</span> res;
+        <span class="kw">if</span>(digits.isEmpty() {
+                )<span class="kw">return</span> res;
+            }
         <span class="fn">bt</span>(digits,<span class="nm">0</span>,<span class="kw">new</span> <span class="tp">StringBuilder</span>(),res);<span class="kw">return</span> res;
     }
     <span class="kw">void</span> <span class="fn">bt</span>(<span class="tp">String</span> d,<span class="kw">int</span> i,<span class="tp">StringBuilder</span> sb,<span class="tp">List</span>&lt;<span class="tp">String</span>&gt; res){
-        <span class="kw">if</span>(i==d.length()){res.add(sb.toString());<span class="kw">return</span>;}
+        <span class="kw">if</span>(i==d.length() {
+                ){res.add(sb.toString());
+            }<span class="kw">return</span>;}
         <span class="kw">for</span>(<span class="kw">char</span> c:map[d.charAt(i)-<span class="st">'0'</span>].toCharArray()){
             sb.append(c);<span class="fn">bt</span>(d,i+<span class="nm">1</span>,sb,res);sb.deleteCharAt(sb.length()-<span class="nm">1</span>);
         }
@@ -1369,7 +1499,11 @@
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;<span class="nm">9</span>;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;<span class="nm">9</span>;j++){
             <span class="kw">if</span>(b[i][j]!=<span class="st">'.'</span>)<span class="kw">continue</span>;
             <span class="kw">for</span>(<span class="kw">char</span> c=<span class="st">'1'</span>;c&lt;=<span class="st">'9'</span>;c++){
-                <span class="kw">if</span>(<span class="fn">ok</span>(b,i,j,c)){b[i][j]=c;<span class="kw">if</span>(<span class="fn">solve</span>(b))<span class="kw">return true</span>;b[i][j]=<span class="st">'.'</span>;}
+                <span class="kw">if</span>(<span class="fn">ok</span>(b,i,j,c) {
+                ){b[i][j]=c;
+            }<span class="kw">if</span>(<span class="fn">solve</span>(b) {
+                )<span class="kw">return true</span>;
+            }b[i][j]=<span class="st">'.'</span>;}
             }
             <span class="kw">return false</span>;
         }
@@ -1377,7 +1511,9 @@
     }
     <span class="kw">boolean</span> <span class="fn">ok</span>(<span class="kw">char</span>[][] b,<span class="kw">int</span> r,<span class="kw">int</span> c,<span class="kw">char</span> x){
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;<span class="nm">9</span>;i++)
-            <span class="kw">if</span>(b[r][i]==x||b[i][c]==x||b[<span class="nm">3</span>*(r/<span class="nm">3</span>)+i/<span class="nm">3</span>][<span class="nm">3</span>*(c/<span class="nm">3</span>)+i%<span class="nm">3</span>]==x)<span class="kw">return false</span>;
+            <span class="kw">if</span>(b[r][i]==x||b[i][c]==x||b[<span class="nm">3</span>*(r/<span class="nm">3</span>) {
+                +i/<span class="nm">3</span>][<span class="nm">3</span>*(c/<span class="nm">3</span>)+i%<span class="nm">3</span>]==x)<span class="kw">return false</span>;
+            }
         <span class="kw">return true</span>;
     }
 }</pre></div></div></div>
@@ -1407,7 +1543,9 @@
         <span class="kw">int</span>[] dp=<span class="kw">new int</span>[amount+<span class="nm">1</span>];
         <span class="tp">Arrays</span>.fill(dp,amount+<span class="nm">1</span>); dp[<span class="nm">0</span>]=<span class="nm">0</span>;
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;=amount;i++)
-            <span class="kw">for</span>(<span class="kw">int</span> c:coins) <span class="kw">if</span>(c&lt;=i) dp[i]=<span class="tp">Math</span>.min(dp[i],dp[i-c]+<span class="nm">1</span>);
+            <span class="kw">for</span>(<span class="kw">int</span> c:coins) <span class="kw">if</span>(c&lt;=i) {
+                dp[i]=<span class="tp">Math</span>.min(dp[i],dp[i-c]+<span class="nm">1</span>);
+            }
         <span class="kw">return</span> dp[amount]&gt;amount?-<span class="nm">1</span>:dp[amount];
     }
 }</pre></div></div></div>
@@ -1416,7 +1554,9 @@
     <span class="kw">public int</span> <span class="fn">lengthOfLIS</span>(<span class="kw">int</span>[] nums){
         <span class="kw">int</span>[] dp=<span class="kw">new int</span>[nums.length]; <span class="tp">Arrays</span>.fill(dp,<span class="nm">1</span>); <span class="kw">int</span> max=<span class="nm">1</span>;
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;nums.length;i++){
-            <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;i;j++) <span class="kw">if</span>(nums[j]&lt;nums[i]) dp[i]=<span class="tp">Math</span>.max(dp[i],dp[j]+<span class="nm">1</span>);
+            <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;i;j++) <span class="kw">if</span>(nums[j]&lt;nums[i]) {
+                dp[i]=<span class="tp">Math</span>.max(dp[i],dp[j]+<span class="nm">1</span>);
+            }
             max=<span class="tp">Math</span>.max(max,dp[i]);
         }
         <span class="kw">return</span> max;
@@ -1448,7 +1588,9 @@
         <span class="kw">int</span> m=n1.length,n=n2.length,max=<span class="nm">0</span>;
         <span class="kw">int</span>[][] dp=<span class="kw">new int</span>[m+<span class="nm">1</span>][n+<span class="nm">1</span>];
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">1</span>;i&lt;=m;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">1</span>;j&lt;=n;j++)
-            <span class="kw">if</span>(n1[i-<span class="nm">1</span>]==n2[j-<span class="nm">1</span>]) max=<span class="tp">Math</span>.max(max,dp[i][j]=dp[i-<span class="nm">1</span>][j-<span class="nm">1</span>]+<span class="nm">1</span>);
+            <span class="kw">if</span>(n1[i-<span class="nm">1</span>]==n2[j-<span class="nm">1</span>]) {
+                max=<span class="tp">Math</span>.max(max,dp[i][j]=dp[i-<span class="nm">1</span>][j-<span class="nm">1</span>]+<span class="nm">1</span>);
+            }
         <span class="kw">return</span> max;
     }
 }</pre></div></div></div>
@@ -1470,7 +1612,9 @@
     <span class="tp">Map</span>&lt;<span class="tp">Node</span>,<span class="tp">Node</span>&gt; visited=<span class="kw">new</span> <span class="tp">HashMap</span>&lt;&gt;();
     <span class="kw">public</span> <span class="tp">Node</span> <span class="fn">cloneGraph</span>(<span class="tp">Node</span> node){
         <span class="kw">if</span>(node==<span class="kw">null</span>)<span class="kw">return null</span>;
-        <span class="kw">if</span>(visited.containsKey(node))<span class="kw">return</span> visited.get(node);
+        <span class="kw">if</span>(visited.containsKey(node) {
+                )<span class="kw">return</span> visited.get(node);
+            }
         <span class="tp">Node</span> clone=<span class="kw">new</span> <span class="tp">Node</span>(node.val);
         visited.put(node,clone);
         <span class="kw">for</span>(<span class="tp">Node</span> n:node.neighbors) clone.neighbors.add(<span class="fn">cloneGraph</span>(n));
@@ -1498,13 +1642,17 @@
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++)g.add(<span class="kw">new</span> <span class="tp">ArrayList</span>&lt;&gt;());
         <span class="kw">for</span>(<span class="kw">int</span>[] p:pre)g.get(p[<span class="nm">1</span>]).add(p[<span class="nm">0</span>]);
         <span class="kw">int</span>[] state=<span class="kw">new int</span>[n];
-        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++) <span class="kw">if</span>(<span class="fn">cycle</span>(g,state,i))<span class="kw">return false</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;n;i++) <span class="kw">if</span>(<span class="fn">cycle</span>(g,state,i) {
+                )<span class="kw">return false</span>;
+            }
         <span class="kw">return true</span>;
     }
     <span class="kw">boolean</span> <span class="fn">cycle</span>(<span class="tp">List</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Integer</span>&gt;&gt; g,<span class="kw">int</span>[] st,<span class="kw">int</span> v){
         <span class="kw">if</span>(st[v]==<span class="nm">1</span>)<span class="kw">return true</span>; <span class="kw">if</span>(st[v]==<span class="nm">2</span>)<span class="kw">return false</span>;
         st[v]=<span class="nm">1</span>;
-        <span class="kw">for</span>(<span class="kw">int</span> nb:g.get(v)) <span class="kw">if</span>(<span class="fn">cycle</span>(g,st,nb))<span class="kw">return true</span>;
+        <span class="kw">for</span>(<span class="kw">int</span> nb:g.get(v)) <span class="kw">if</span>(<span class="fn">cycle</span>(g,st,nb) {
+                )<span class="kw">return true</span>;
+            }
         st[v]=<span class="nm">2</span>; <span class="kw">return false</span>;
     }
 }</pre></div></div></div>
@@ -1532,8 +1680,12 @@
         <span class="kw">int</span> rows=g.length,cols=g[<span class="nm">0</span>].length,fresh=<span class="nm">0</span>,mins=<span class="nm">0</span>;
         <span class="tp">Queue</span>&lt;<span class="kw">int</span>[]&gt; q=<span class="kw">new</span> <span class="tp">LinkedList</span>&lt;&gt;();
         <span class="kw">for</span>(<span class="kw">int</span> i=<span class="nm">0</span>;i&lt;rows;i++) <span class="kw">for</span>(<span class="kw">int</span> j=<span class="nm">0</span>;j&lt;cols;j++){
-            <span class="kw">if</span>(g[i][j]==<span class="nm">2</span>)q.offer(<span class="kw">new int</span>[]{i,j});
-            <span class="kw">else if</span>(g[i][j]==<span class="nm">1</span>)fresh++;
+            <span class="kw">if</span>(g[i][j]==<span class="nm">2</span>) {
+                q.offer(<span class="kw">new int</span>[]{i,j});
+            }
+            <span class="kw">else if</span>(g[i][j]==<span class="nm">1</span>) {
+                fresh++;
+            }
         }
         <span class="kw">int</span>[][] dirs={{<span class="nm">1</span>,<span class="nm">0</span>},{-<span class="nm">1</span>,<span class="nm">0</span>},{<span class="nm">0</span>,<span class="nm">1</span>},{<span class="nm">0</span>,-<span class="nm">1</span>}};
         <span class="kw">while</span>(!q.isEmpty()&amp;&amp;fresh&gt;<span class="nm">0</span>){
@@ -1563,7 +1715,9 @@
         }
         <span class="kw">return</span> comp;
     }
-    <span class="kw">int</span> <span class="fn">find</span>(<span class="kw">int</span> x){<span class="kw">if</span>(parent[x]!=x)parent[x]=<span class="fn">find</span>(parent[x]);<span class="kw">return</span> parent[x];}
+    <span class="kw">int</span> <span class="fn">find</span>(<span class="kw">int</span> x){<span class="kw">if</span>(parent[x]!=x) {
+                parent[x]=<span class="fn">find</span>(parent[x]);
+            }<span class="kw">return</span> parent[x];}
 }</pre></div></div></div>
 
   <!-- ═══ BIT MANIPULATION ═══ -->
